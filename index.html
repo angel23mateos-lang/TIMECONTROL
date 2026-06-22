@@ -4,818 +4,652 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TimeControl</title>
-<meta name="theme-color" content="#1565C0">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Segoe UI',sans-serif; background:#f5f5f5; overflow:hidden; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; color: #1a1a2e; }
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
 
-/* ===== PANTALLAS ===== */
-.screen { display:none; width:100vw; height:100vh; overflow-y:auto; }
-.screen.active { display:flex; flex-direction:column; }
-
-/* ===== 1. SPLASH / PORTADA ===== */
+/* SPLASH */
 #splash {
-  background: linear-gradient(160deg, #1565C0 0%, #1976D2 50%, #0D47A1 100%);
-  align-items:center; justify-content:center; text-align:center;
-  padding:40px 20px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  align-items: center; justify-content: center; flex-direction: column; gap: 20px;
 }
-.splash-logo { margin-bottom:10px; }
-.splash-logo svg { width:80px; height:80px; }
-.splash-title { font-size:38px; font-weight:900; letter-spacing:2px; margin-bottom:5px; }
-.splash-title span.time { color:#fff; }
-.splash-title span.control { color:#4CAF50; }
-.splash-subtitle { color:rgba(255,255,255,0.85); font-size:15px; margin-bottom:30px; }
-.splash-illustration { 
-  width:220px; height:220px; margin:0 auto 30px;
-  background:rgba(255,255,255,0.1); border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:80px; position:relative;
-}
-.app-icons { position:absolute; width:100%; height:100%; }
-.app-icon { position:absolute; width:50px; height:50px; border-radius:12px;
-  display:flex; align-items:center; justify-content:center; font-size:24px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.3); }
-.icon-tiktok { background:#000; top:10px; right:20px; }
-.icon-instagram { background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); top:50%; right:0; transform:translateY(-50%); }
-.icon-youtube { background:#FF0000; bottom:20px; right:30px; }
-.icon-clock { background:#4CAF50; bottom:10px; left:20px; }
-.splash-person { font-size:70px; }
-.btn-comenzar {
-  background:#4CAF50; color:#fff; border:none; border-radius:30px;
-  padding:18px 60px; font-size:18px; font-weight:700; cursor:pointer;
-  box-shadow:0 6px 20px rgba(76,175,80,0.5); width:85%; max-width:320px;
-  transition:transform 0.2s;
-}
-.btn-comenzar:active { transform:scale(0.97); }
-.dots { display:flex; gap:8px; margin-top:20px; }
-.dot { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.4); }
-.dot.active { background:#fff; }
+#splash .logo { font-size: 80px; }
+#splash h1 { color: white; font-size: 32px; font-weight: 700; letter-spacing: 2px; }
+#splash p { color: #a0b4ff; font-size: 14px; }
+.loader { width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 20px; overflow: hidden; }
+.loader-bar { height: 100%; width: 0%; background: #4f8ef7; border-radius: 2px; animation: load 2s ease forwards; }
+@keyframes load { to { width: 100%; } }
 
-/* ===== 2. REGISTRO / META ===== */
-#registro { background:#f0f4ff; }
-.reg-header {
-  background:#1565C0; color:#fff; padding:50px 20px 30px;
-  text-align:center;
+/* REGISTRO */
+#registro {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  align-items: center; justify-content: center; padding: 30px;
 }
-.reg-header h2 { font-size:24px; font-weight:800; margin-bottom:8px; }
-.reg-header p { font-size:14px; opacity:0.85; }
-.reg-body { padding:25px 20px; flex:1; }
-.meta-option {
-  background:#fff; border-radius:16px; padding:18px 20px;
-  margin-bottom:12px; display:flex; align-items:center;
-  border:2px solid transparent; cursor:pointer; transition:all 0.2s;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+.reg-card {
+  background: white; border-radius: 24px; padding: 40px 30px;
+  width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
-.meta-option.selected { border-color:#4CAF50; background:#f0fff4; }
-.meta-option .meta-icon { font-size:22px; margin-right:15px; }
-.meta-option .meta-text { flex:1; font-size:16px; font-weight:600; color:#333; }
-.meta-radio {
-  width:22px; height:22px; border-radius:50%; border:2px solid #ccc;
-  display:flex; align-items:center; justify-content:center;
+.reg-card .logo-top { text-align: center; font-size: 50px; margin-bottom: 10px; }
+.reg-card h2 { text-align: center; color: #1a1a2e; font-size: 24px; margin-bottom: 5px; }
+.reg-card p { text-align: center; color: #888; font-size: 13px; margin-bottom: 30px; }
+.input-group { margin-bottom: 16px; }
+.input-group label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
+.input-group input {
+  width: 100%; padding: 14px 16px; border: 2px solid #e8ecff;
+  border-radius: 12px; font-size: 15px; outline: none; transition: border 0.3s;
 }
-.meta-option.selected .meta-radio { border-color:#4CAF50; background:#4CAF50; }
-.meta-option.selected .meta-radio::after { content:''; width:8px; height:8px; border-radius:50%; background:#fff; }
-.btn-guardar {
-  background:#1565C0; color:#fff; border:none; border-radius:30px;
-  padding:18px; font-size:17px; font-weight:700; width:100%;
-  margin-top:10px; cursor:pointer; box-shadow:0 6px 20px rgba(21,101,192,0.4);
+.input-group input:focus { border-color: #4f8ef7; }
+.btn-primary {
+  width: 100%; padding: 16px; background: linear-gradient(135deg, #4f8ef7, #1a5cdb);
+  color: white; border: none; border-radius: 12px; font-size: 16px;
+  font-weight: 700; cursor: pointer; margin-top: 10px; letter-spacing: 0.5px;
+}
+.btn-primary:active { transform: scale(0.98); }
+.link-text { text-align: center; margin-top: 16px; font-size: 13px; color: #888; }
+.link-text span { color: #4f8ef7; font-weight: 600; cursor: pointer; }
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, #1a1a2e, #0f3460);
+  padding: 50px 20px 20px; color: white;
+}
+.header-top { display: flex; justify-content: space-between; align-items: center; }
+.header h2 { font-size: 22px; font-weight: 700; }
+.header p { font-size: 13px; color: #a0b4ff; margin-top: 2px; }
+.avatar {
+  width: 42px; height: 42px; background: #4f8ef7;
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 18px; cursor: pointer;
 }
 
-/* ===== NAVBAR ===== */
-.navbar {
-  display:flex; background:#fff; border-top:1px solid #eee;
-  padding:10px 0 15px; position:sticky; bottom:0;
+/* NAV */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white; display: flex; justify-content: space-around;
+  padding: 10px 0 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  z-index: 100;
 }
 .nav-item {
-  flex:1; display:flex; flex-direction:column; align-items:center;
-  cursor:pointer; color:#999; font-size:10px; gap:4px; transition:color 0.2s;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; cursor: pointer; padding: 6px 16px; border-radius: 12px;
+  transition: background 0.2s; font-size: 11px; color: #888;
 }
-.nav-item.active { color:#1565C0; }
-.nav-item svg { width:22px; height:22px; }
+.nav-item.active { color: #4f8ef7; background: #f0f4ff; }
+.nav-item span:first-child { font-size: 22px; }
 
-/* ===== 3. INICIO ===== */
-#inicio { background:#f5f7ff; }
-.inicio-header {
-  background:linear-gradient(135deg,#1565C0,#1976D2);
-  padding:50px 20px 25px; color:#fff;
-  display:flex; justify-content:space-between; align-items:center;
-}
-.inicio-header h2 { font-size:22px; font-weight:700; }
-.header-icons { display:flex; gap:15px; font-size:22px; }
-.tiempo-card {
-  background:#fff; margin:15px; border-radius:20px;
-  padding:25px 20px; box-shadow:0 4px 15px rgba(0,0,0,0.08);
-  text-align:center;
-}
-.tiempo-label { font-size:14px; color:#666; margin-bottom:5px; }
-.tiempo-value { font-size:42px; font-weight:900; color:#1a1a2e; margin-bottom:15px; }
-.progress-bar-bg {
-  background:#e8e8e8; border-radius:10px; height:12px; margin-bottom:8px; overflow:hidden;
-}
-.progress-bar-fill {
-  height:100%; border-radius:10px;
-  background:linear-gradient(90deg,#4CAF50,#66BB6A);
-  transition:width 1s ease;
-}
-.progress-info { display:flex; justify-content:space-between; font-size:13px; color:#666; }
-.progress-pct { color:#4CAF50; font-weight:700; }
-.status-card {
-  margin:0 15px; background:#e8f5e9; border-radius:16px;
-  padding:15px 20px; display:flex; align-items:center; gap:12px;
-  border-left:4px solid #4CAF50;
-}
-.status-card .status-icon { font-size:24px; }
-.status-card p { font-size:14px; color:#2e7d32; font-weight:600; }
-.accesos-title { padding:20px 15px 10px; font-size:16px; font-weight:700; color:#333; }
-.accesos-grid {
-  display:grid; grid-template-columns:repeat(4,1fr);
-  gap:10px; padding:0 15px 15px;
-}
-.acceso-item {
-  background:#fff; border-radius:16px; padding:15px 5px;
-  display:flex; flex-direction:column; align-items:center; gap:6px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06); cursor:pointer;
-  transition:transform 0.2s;
-}
-.acceso-item:active { transform:scale(0.95); }
-.acceso-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; }
-.acceso-label { font-size:11px; color:#666; font-weight:600; }
-.bg-blue { background:#e3f2fd; }
-.bg-green { background:#e8f5e9; }
-.bg-purple { background:#f3e5f5; }
-.bg-yellow { background:#fff8e1; }
+/* MAIN CONTENT */
+.content { flex: 1; padding: 20px; padding-bottom: 90px; overflow-y: auto; }
 
-/* ===== 4. USO POR APP ===== */
-#apps { background:#f5f7ff; }
-.apps-header {
-  background:#1565C0; color:#fff; padding:50px 20px 20px;
-  display:flex; align-items:center; gap:15px;
+/* CARDS */
+.card {
+  background: white; border-radius: 16px; padding: 20px;
+  margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
-.back-btn { font-size:22px; cursor:pointer; }
-.apps-header h2 { flex:1; font-size:20px; font-weight:700; }
-.date-nav {
-  display:flex; align-items:center; justify-content:center;
-  gap:20px; padding:15px; background:#fff; margin:15px;
-  border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,0.06);
+.card-title { font-size: 13px; color: #888; margin-bottom: 4px; font-weight: 600; }
+.card-value { font-size: 28px; font-weight: 800; color: #1a1a2e; }
+.card-sub { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.stat-card {
+  background: white; border-radius: 16px; padding: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
-.date-nav button { background:none; border:none; font-size:20px; cursor:pointer; color:#1565C0; }
-.date-nav span { font-size:16px; font-weight:700; color:#333; }
-.app-list { padding:0 15px; }
+.stat-icon { font-size: 24px; margin-bottom: 8px; }
+.stat-label { font-size: 11px; color: #888; font-weight: 600; }
+.stat-value { font-size: 20px; font-weight: 800; color: #1a1a2e; }
+
+/* BOTÓN REGISTRAR */
+.btn-registrar {
+  width: 100%; padding: 18px; background: linear-gradient(135deg, #4f8ef7, #1a5cdb);
+  color: white; border: none; border-radius: 16px; font-size: 17px;
+  font-weight: 700; cursor: pointer; margin-bottom: 16px;
+  box-shadow: 0 8px 24px rgba(79,142,247,0.4);
+}
+
+/* APPS LIST */
 .app-item {
-  background:#fff; border-radius:16px; padding:15px;
-  margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0; border-bottom: 1px solid #f0f0f0;
 }
-.app-item-header { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
-.app-item-icon { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; }
-.app-item-info { flex:1; }
-.app-item-name { font-size:16px; font-weight:700; color:#333; }
-.app-item-time { font-size:13px; color:#666; }
-.app-item-pct { font-size:14px; font-weight:700; color:#1565C0; }
-.app-progress-bg { background:#e8e8e8; border-radius:6px; height:8px; overflow:hidden; }
-.app-progress-fill { height:100%; border-radius:6px; background:linear-gradient(90deg,#1565C0,#42A5F5); }
+.app-info { display: flex; align-items: center; gap: 12px; }
+.app-icon { font-size: 28px; }
+.app-name { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+.app-time { font-size: 12px; color: #888; }
+.app-bar-wrap { width: 80px; height: 6px; background: #f0f0f0; border-radius: 3px; }
+.app-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #4f8ef7, #1a5cdb); }
 
-/* ===== 5. ALERTA ===== */
-#alerta { background:#fff5f5; align-items:center; justify-content:center; text-align:center; padding:40px 25px; }
-.alerta-icon-wrap {
-  width:130px; height:130px; border-radius:50%; background:#ffe0e0;
-  display:flex; align-items:center; justify-content:center;
-  margin:0 auto 25px; font-size:65px;
+/* PANTALLA APPS */
+#apps-screen { background: #f0f4ff; }
+.apps-header {
+  background: linear-gradient(135deg, #1a1a2e, #0f3460);
+  padding: 50px 20px 20px; color: white;
+  display: flex; align-items: center; gap: 15px;
 }
-.alerta h2 { font-size:24px; font-weight:900; color:#c62828; margin-bottom:12px; }
-.alerta p { font-size:15px; color:#666; margin-bottom:35px; line-height:1.5; }
-.btn-continuar {
-  background:#D32F2F; color:#fff; border:none; border-radius:30px;
-  padding:16px; font-size:16px; font-weight:700; width:100%; margin-bottom:12px; cursor:pointer;
+.back-btn {
+  width: 36px; height: 36px; background: rgba(255,255,255,0.15);
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; font-size: 18px;
+  border: none; color: white;
 }
-.btn-activar {
-  background:transparent; color:#D32F2F; border:2px solid #D32F2F; border-radius:30px;
-  padding:16px; font-size:16px; font-weight:700; width:100%; cursor:pointer;
+.apps-header h2 { font-size: 20px; font-weight: 700; }
+
+/* MODAL LÍMITE */
+.modal-overlay {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); z-index: 200; align-items: flex-end;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  background: white; border-radius: 24px 24px 0 0; padding: 30px;
+  width: 100%; animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.modal-app { font-size: 13px; color: #888; margin-bottom: 20px; }
+.time-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.time-opt {
+  padding: 14px; border: 2px solid #e8ecff; border-radius: 12px;
+  text-align: center; cursor: pointer; font-size: 14px; font-weight: 600;
+  transition: all 0.2s; background: white;
+}
+.time-opt.selected { border-color: #4f8ef7; background: #f0f4ff; color: #4f8ef7; }
+.custom-input-wrap { margin-bottom: 16px; display: none; }
+.custom-input-wrap input {
+  width: 100%; padding: 14px; border: 2px solid #4f8ef7;
+  border-radius: 12px; font-size: 15px; outline: none; text-align: center;
+}
+.modal-btns { display: flex; gap: 10px; }
+.btn-cancel {
+  flex: 1; padding: 14px; border: 2px solid #e8ecff; background: white;
+  border-radius: 12px; font-size: 15px; cursor: pointer; font-weight: 600;
+}
+.btn-save {
+  flex: 1; padding: 14px; background: linear-gradient(135deg, #4f8ef7, #1a5cdb);
+  color: white; border: none; border-radius: 12px; font-size: 15px;
+  cursor: pointer; font-weight: 700;
 }
 
-/* ===== 6. RESTRICCIÓN ===== */
-#restriccion { background:#fff5f5; align-items:center; justify-content:center; text-align:center; padding:40px 25px; }
-.restriccion-icon {
-  width:130px; height:130px; border-radius:50%; background:#ffe0e0;
-  display:flex; align-items:center; justify-content:center;
-  margin:0 auto 25px; font-size:65px;
-}
-.restriccion h2 { font-size:26px; font-weight:900; color:#1a1a2e; margin-bottom:10px; }
-.restriccion .app-name { color:#D32F2F; }
-.restriccion p { font-size:14px; color:#666; margin-bottom:20px; }
-.bloqueo-info {
-  background:#fff; border-radius:16px; padding:16px 20px;
-  display:flex; align-items:center; gap:12px; margin-bottom:30px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.08); width:100%;
-}
-.bloqueo-info span { font-size:14px; color:#333; font-weight:600; }
-.btn-mas-tiempo {
-  background:#D32F2F; color:#fff; border:none; border-radius:30px;
-  padding:16px; font-size:16px; font-weight:700; width:100%; margin-bottom:12px; cursor:pointer;
-}
-.btn-volver {
-  background:transparent; color:#D32F2F; border:2px solid #D32F2F; border-radius:30px;
-  padding:16px; font-size:16px; font-weight:700; width:100%; cursor:pointer;
-}
-
-/* ===== 7. ESTADÍSTICAS ===== */
-#estadisticas { background:#f5f7ff; }
-.stats-header {
-  background:#1565C0; color:#fff; padding:50px 20px 20px;
-  text-align:center;
-}
-.stats-header h2 { font-size:22px; font-weight:800; }
-.period-tabs {
-  display:flex; background:#fff; margin:15px; border-radius:30px;
-  padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.06);
-}
-.period-tab {
-  flex:1; padding:10px; text-align:center; border-radius:25px;
-  font-size:14px; font-weight:600; color:#999; cursor:pointer; transition:all 0.2s;
-}
-.period-tab.active { background:#1565C0; color:#fff; }
-.chart-card {
-  background:#fff; margin:0 15px 15px; border-radius:20px;
-  padding:20px; box-shadow:0 4px 15px rgba(0,0,0,0.08);
-}
-.chart-title { font-size:16px; font-weight:700; color:#333; margin-bottom:15px; }
-.bar-chart { display:flex; align-items:flex-end; gap:8px; height:120px; margin-bottom:10px; }
-.bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
-.bar { width:100%; border-radius:6px 6px 0 0; background:linear-gradient(180deg,#42A5F5,#1565C0); min-height:10px; }
-.bar-label { font-size:10px; color:#999; font-weight:600; }
-.bar-val { font-size:9px; color:#1565C0; font-weight:700; }
-.insight-card {
-  background:#e8f5e9; border-radius:16px; padding:15px;
-  display:flex; align-items:center; gap:12px; margin-bottom:15px;
-}
-.insight-card span { font-size:14px; color:#2e7d32; font-weight:600; line-height:1.4; }
-.resumen-card {
-  background:#fff; margin:0 15px 15px; border-radius:20px;
-  padding:20px; box-shadow:0 4px 15px rgba(0,0,0,0.08);
-}
-.resumen-title { font-size:16px; font-weight:700; color:#333; margin-bottom:15px; }
-.resumen-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f0f0f0; }
-.resumen-row:last-child { border-bottom:none; }
-.resumen-key { font-size:14px; color:#666; }
-.resumen-val { font-size:14px; font-weight:700; color:#333; }
-
-/* ===== 8. LOGROS ===== */
-#logros { background:#f5f7ff; }
-.logros-header {
-  background:#fff; padding:50px 20px 20px;
-  display:flex; justify-content:space-between; align-items:center;
-  border-bottom:1px solid #eee;
-}
-.logros-header h2 { font-size:22px; font-weight:800; color:#1a1a2e; }
-.trophy-big { font-size:80px; text-align:center; padding:20px 0; }
-.logro-item {
-  background:#fff; margin:0 15px 12px; border-radius:20px;
-  padding:18px; display:flex; align-items:center; gap:15px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06);
-}
-.logro-icon { width:50px; height:50px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
-.logro-green { background:#4CAF50; }
-.logro-purple { background:#9C27B0; }
-.logro-blue { background:#1565C0; }
-.logro-info h3 { font-size:15px; font-weight:700; color:#1a1a2e; margin-bottom:4px; }
-.logro-info p { font-size:13px; color:#666; }
-.motivacion {
-  background:#e8f5e9; margin:0 15px 20px; border-radius:16px;
-  padding:18px; display:flex; align-items:center; gap:12px;
-}
-.motivacion span { font-size:14px; color:#2e7d32; font-weight:600; }
-
-/* ===== PERFIL ===== */
-#perfil { background:#f5f7ff; }
+/* PERFIL */
+#perfil-screen { background: #f0f4ff; }
 .perfil-header {
-  background:linear-gradient(135deg,#1565C0,#1976D2);
-  padding:50px 20px 40px; text-align:center; color:#fff;
+  background: linear-gradient(135deg, #1a1a2e, #0f3460);
+  padding: 50px 20px 40px; text-align: center; color: white;
 }
-.perfil-avatar { font-size:60px; margin-bottom:10px; }
-.perfil-header h2 { font-size:22px; font-weight:800; }
-.perfil-header p { font-size:14px; opacity:0.8; }
-.perfil-card {
-  background:#fff; margin:15px; border-radius:20px;
-  padding:20px; box-shadow:0 4px 15px rgba(0,0,0,0.08);
+.perfil-avatar { font-size: 60px; margin-bottom: 10px; }
+.perfil-nombre { font-size: 22px; font-weight: 700; }
+.perfil-email { font-size: 13px; color: #a0b4ff; margin-top: 4px; }
+.perfil-item {
+  background: white; margin: 0 16px 10px; border-radius: 14px;
+  padding: 16px 20px; display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;
 }
-.perfil-row {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:14px 0; border-bottom:1px solid #f0f0f0; cursor:pointer;
+.perfil-item-icon { font-size: 22px; }
+.perfil-item-text { font-size: 15px; font-weight: 600; color: #1a1a2e; }
+.perfil-item-sub { font-size: 12px; color: #888; }
+.perfil-section-title { padding: 20px 20px 8px; font-size: 13px; color: #888; font-weight: 700; text-transform: uppercase; }
+
+/* ALERTAS */
+#alertas-screen { background: #f0f4ff; }
+.alerta-item {
+  background: white; border-radius: 14px; padding: 16px;
+  margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
-.perfil-row:last-child { border-bottom:none; }
-.perfil-row-left { display:flex; align-items:center; gap:12px; font-size:15px; color:#333; font-weight:600; }
-.perfil-row-icon { font-size:20px; }
-.perfil-arrow { color:#ccc; font-size:18px; }
+.alerta-icon { font-size: 28px; }
+.alerta-titulo { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+.alerta-desc { font-size: 13px; color: #888; margin-top: 2px; }
+.alerta-tiempo { font-size: 11px; color: #aaa; margin-top: 4px; }
+.badge { background: #ff4757; color: white; border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+
 </style>
 </head>
 <body>
 
-<!-- ===== PANTALLA 1: SPLASH ===== -->
+<!-- SPLASH -->
 <div id="splash" class="screen active">
-  <div class="splash-logo">
-    <svg viewBox="0 0 80 80" fill="none">
-      <circle cx="40" cy="40" r="38" stroke="#4CAF50" stroke-width="4"/>
-      <circle cx="40" cy="40" r="28" fill="rgba(255,255,255,0.15)"/>
-      <line x1="40" y1="20" x2="40" y2="42" stroke="white" stroke-width="4" stroke-linecap="round"/>
-      <line x1="40" y1="42" x2="54" y2="50" stroke="#4CAF50" stroke-width="4" stroke-linecap="round"/>
-      <circle cx="40" cy="42" r="3" fill="white"/>
-    </svg>
-  </div>
-  <h1 class="splash-title"><span class="time">TIME</span><span class="control">CONTROL</span></h1>
-  <p class="splash-subtitle">Controla tu tiempo en redes sociales</p>
-  <div class="splash-illustration">
-    <div class="app-icons">
-      <div class="app-icon icon-tiktok">🎵</div>
-      <div class="app-icon icon-instagram">📸</div>
-      <div class="app-icon icon-youtube">▶️</div>
-      <div class="app-icon icon-clock">⏬</div>
-    </div>
-    <span class="splash-person">🧑‍💻</span>
-  </div>
-  <button class="btn-comenzar" onclick="showScreen('registro')">Comenzar</button>
-  <div class="dots">
-    <div class="dot active"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-  </div>
+  <div class="logo">⏱️</div>
+  <h1>TimeControl</h1>
+  <p>Controla tu tiempo en pantalla</p>
+  <div class="loader"><div class="loader-bar"></div></div>
 </div>
 
-<!-- ===== PANTALLA 2: REGISTRO ===== -->
+<!-- REGISTRO -->
 <div id="registro" class="screen">
-  <div class="reg-header">
-    <h2>Configura tu meta diaria</h2>
-    <p>¿Cuánto tiempo deseas usar redes sociales al día?</p>
-  </div>
-  <div class="reg-body">
-    <div class="meta-option" onclick="selectMeta(this,'1 hora')">
-      <span class="meta-icon">🕐</span>
-      <span class="meta-text">1 hora</span>
-      <div class="meta-radio"></div>
+  <div class="reg-card">
+    <div class="logo-top">⏱️</div>
+    <h2>Crear cuenta</h2>
+    <p>Empieza a controlar tu tiempo</p>
+    <div class="input-group">
+      <label>Tu nombre</label>
+      <input type="text" id="reg-nombre" placeholder="Ej: Ángel" />
     </div>
-    <div class="meta-option selected" onclick="selectMeta(this,'2 horas')">
-      <span class="meta-icon">🕑</span>
-      <span class="meta-text">2 horas</span>
-      <div class="meta-radio"></div>
+    <div class="input-group">
+      <label>Correo electrónico</label>
+      <input type="email" id="reg-email" placeholder="correo@ejemplo.com" />
     </div>
-    <div class="meta-option" onclick="selectMeta(this,'3 horas')">
-      <span class="meta-icon">🕒</span>
-      <span class="meta-text">3 horas</span>
-      <div class="meta-radio"></div>
+    <div class="input-group">
+      <label>Contraseña</label>
+      <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" />
     </div>
-    <div class="meta-option" onclick="selectMeta(this,'Personalizado')">
-      <span class="meta-icon">✏️</span>
-      <span class="meta-text">Personalizado</span>
-      <div class="meta-radio"></div>
-    </div>
-    <button class="btn-guardar" onclick="guardarMeta()">Guardar meta</button>
+    <button class="btn-primary" onclick="registrar()">Crear cuenta →</button>
+    <div class="link-text">¿Ya tienes cuenta? <span onclick="mostrarLogin()">Iniciar sesión</span></div>
   </div>
 </div>
 
-<!-- ===== PANTALLA 3: INICIO ===== -->
+<!-- LOGIN -->
+<div id="login" class="screen">
+  <div class="reg-card">
+    <div class="logo-top">⏱️</div>
+    <h2>Bienvenido</h2>
+    <p>Inicia sesión en tu cuenta</p>
+    <div class="input-group">
+      <label>Correo electrónico</label>
+      <input type="email" id="login-email" placeholder="correo@ejemplo.com" />
+    </div>
+    <div class="input-group">
+      <label>Contraseña</label>
+      <input type="password" id="login-pass" placeholder="Tu contraseña" />
+    </div>
+    <button class="btn-primary" onclick="login()">Iniciar sesión →</button>
+    <div class="link-text">¿No tienes cuenta? <span onclick="mostrarRegistro()">Registrarse</span></div>
+  </div>
+</div>
+
+<!-- INICIO -->
 <div id="inicio" class="screen">
-  <div class="inicio-header">
-    <div>
-      <p style="font-size:13px;opacity:0.8;">Hola,</p>
-      <h2 id="nombre-usuario">Usuario 👋</h2>
-    </div>
-    <div class="header-icons">
-      <span onclick="showScreen('estadisticas')" style="cursor:pointer">☰</span>
-      <span>🔔</span>
-    </div>
-  </div>
-  <div class="tiempo-card">
-    <p class="tiempo-label">Tiempo usado hoy</p>
-    <p class="tiempo-value">2 h 35 min</p>
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" style="width:75%"></div>
-    </div>
-    <div class="progress-info">
-      <span id="meta-label">Meta diaria: 3 horas</span>
-      <span class="progress-pct">75%</span>
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h2 id="saludo-nombre">Hola, Usuario 👋</h2>
+        <p id="fecha-hoy">Hoy es lunes</p>
+      </div>
+      <div class="avatar" onclick="irPerfil()">👤</div>
     </div>
   </div>
-  <div class="status-card">
-    <span class="status-icon">✅</span>
-    <p>Vas bien. Te quedan 45 minutos.</p>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">⏱ TIEMPO HOY</div>
+      <div class="card-value">3h 24m</div>
+      <div class="card-sub">↑ 12% más que ayer</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📱</div>
+        <div class="stat-label">APPS USADAS</div>
+        <div class="stat-value">8</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔓</div>
+        <div class="stat-label">DESBLOQUEOS</div>
+        <div class="stat-value">34</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-label">RACHA</div>
+        <div class="stat-value">5 días</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-label">META</div>
+        <div class="stat-value">68%</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">📊 APPS MÁS USADAS HOY</div>
+      <div class="app-item">
+        <div class="app-info">
+          <span class="app-icon">📸</span>
+          <div><div class="app-name">Instagram</div><div class="app-time">1h 12m</div></div>
+        </div>
+        <div class="app-bar-wrap"><div class="app-bar" style="width:80%"></div></div>
+      </div>
+      <div class="app-item">
+        <div class="app-info">
+          <span class="app-icon">▶️</span>
+          <div><div class="app-name">YouTube</div><div class="app-time">58m</div></div>
+        </div>
+        <div class="app-bar-wrap"><div class="app-bar" style="width:60%"></div></div>
+      </div>
+      <div class="app-item">
+        <div class="app-info">
+          <span class="app-icon">💬</span>
+          <div><div class="app-name">WhatsApp</div><div class="app-time">34m</div></div>
+        </div>
+        <div class="app-bar-wrap"><div class="app-bar" style="width:38%"></div></div>
+      </div>
+    </div>
+    <button class="btn-registrar" onclick="irApps()">📱 Ver todas las apps</button>
   </div>
-  <p class="accesos-title">Accesos rápidos</p>
-  <div class="accesos-grid">
-    <div class="acceso-item" onclick="showScreen('apps')">
-      <div class="acceso-icon bg-blue">📊</div>
-      <span class="acceso-label">Aplicaciones</span>
-    </div>
-    <div class="acceso-item" onclick="showScreen('alerta')">
-      <div class="acceso-icon bg-green">🔒</div>
-      <span class="acceso-label">Límites</span>
-    </div>
-    <div class="acceso-item" onclick="showScreen('estadisticas')">
-      <div class="acceso-icon bg-purple">📈</div>
-      <span class="acceso-label">Estadísticas</span>
-    </div>
-    <div class="acceso-item" onclick="showScreen('logros')">
-      <div class="acceso-icon bg-yellow">🏆</div>
-      <span class="acceso-label">Logros</span>
-    </div>
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="irInicio()"><span>🏠</span><span>Inicio</span></div>
+    <div class="nav-item" onclick="irApps()"><span>📱</span><span>Apps</span></div>
+    <div class="nav-item" onclick="irAlertas()"><span>🔔</span><span>Alertas</span></div>
+    <div class="nav-item" onclick="irPerfil()"><span>👤</span><span>Perfil</span></div>
   </div>
-  <div style="flex:1"></div>
-  <nav class="navbar">
-    <div class="nav-item active" onclick="showScreen('inicio')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Inicio</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('estadisticas')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
-      <span>Estadísticas</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('alerta')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-      <span>Límites</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('perfil')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Perfil</span>
-    </div>
-  </nav>
 </div>
 
-<!-- ===== PANTALLA 4: USO POR APP ===== -->
-<div id="apps" class="screen">
+<!-- APPS -->
+<div id="apps-screen" class="screen">
   <div class="apps-header">
-    <span class="back-btn" onclick="showScreen('inicio')">←</span>
-    <h2>Uso de aplicaciones</h2>
-    <span>📅</span>
-  </div>
-  <div class="date-nav">
-    <button>‹</button>
-    <span>Hoy</span>
-    <button>›</button>
-  </div>
-  <div class="app-list">
-    <div class="app-item">
-      <div class="app-item-header">
-        <div class="app-item-icon" style="background:#000">🎵</div>
-        <div class="app-item-info">
-          <p class="app-item-name">TikTok</p>
-          <p class="app-item-time">1 h 20 min</p>
-        </div>
-        <span class="app-item-pct">40%</span>
-      </div>
-      <div class="app-progress-bg"><div class="app-progress-fill" style="width:40%"></div></div>
-    </div>
-    <div class="app-item">
-      <div class="app-item-header">
-        <div class="app-item-icon" style="background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)">📸</div>
-        <div class="app-item-info">
-          <p class="app-item-name">Instagram</p>
-          <p class="app-item-time">40 min</p>
-        </div>
-        <span class="app-item-pct">22%</span>
-      </div>
-      <div class="app-progress-bg"><div class="app-progress-fill" style="width:22%"></div></div>
-    </div>
-    <div class="app-item">
-      <div class="app-item-header">
-        <div class="app-item-icon" style="background:#FF0000">▶️</div>
-        <div class="app-item-info">
-          <p class="app-item-name">YouTube</p>
-          <p class="app-item-time">35 min</p>
-        </div>
-        <span class="app-item-pct">18%</span>
-      </div>
-      <div class="app-progress-bg"><div class="app-progress-fill" style="width:18%"></div></div>
-    </div>
-    <div class="app-item">
-      <div class="app-item-header">
-        <div class="app-item-icon" style="background:#25D366">💬</div>
-        <div class="app-item-info">
-          <p class="app-item-name">WhatsApp</p>
-          <p class="app-item-time">20 min</p>
-        </div>
-        <span class="app-item-pct">10%</span>
-      </div>
-      <div class="app-progress-bg"><div class="app-progress-fill" style="width:10%"></div></div>
-    </div>
-    <div class="app-item">
-      <div class="app-item-header">
-        <div class="app-item-icon" style="background:#1877F2">👍</div>
-        <div class="app-item-info">
-          <p class="app-item-name">Facebook</p>
-          <p class="app-item-time">10 min</p>
-        </div>
-        <span class="app-item-pct">5%</span>
-      </div>
-      <div class="app-progress-bg"><div class="app-progress-fill" style="width:5%"></div></div>
-    </div>
-  </div>
-  <div style="flex:1"></div>
-  <nav class="navbar">
-    <div class="nav-item active" onclick="showScreen('inicio')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Inicio</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('estadisticas')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
-      <span>Estadísticas</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('alerta')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-      <span>Límites</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('perfil')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Perfil</span>
-    </div>
-  </nav>
-</div>
-
-<!-- ===== PANTALLA 5: ALERTA ===== -->
-<div id="alerta" class="screen">
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 25px;text-align:center;">
-    <div class="alerta-icon-wrap">🔔</div>
-    <h2 style="font-size:24px;font-weight:900;color:#c62828;margin-bottom:12px;">Has alcanzado el 90% de tu límite diario.</h2>
-    <p style="font-size:15px;color:#666;margin-bottom:35px;line-height:1.5;">Te quedan <strong>15 minutos</strong> para llegar a tu límite.</p>
-    <button class="btn-continuar" onclick="showScreen('inicio')">Continuar</button>
-    <button class="btn-activar" onclick="showScreen('restriccion')">Activar restricción</button>
-  </div>
-  <nav class="navbar">
-    <div class="nav-item" onclick="showScreen('inicio')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Inicio</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('estadisticas')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
-      <span>Estadísticas</span>
-    </div>
-    <div class="nav-item active">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-      <span>Límites</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('perfil')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Perfil</span>
-    </div>
-  </nav>
-</div>
-
-<!-- ===== PANTALLA 6: RESTRICCIÓN ===== -->
-<div id="restriccion" class="screen">
-  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 25px;text-align:center;">
-    <div class="restriccion-icon">🔒</div>
-    <h2 style="font-size:26px;font-weight:900;color:#1a1a2e;margin-bottom:10px;">Tiempo agotado</h2>
-    <p style="font-size:14px;color:#666;margin-bottom:20px;">Has alcanzado tu límite diario para <span style="color:#D32F2F;font-weight:700;">TikTok</span>.</p>
-    <div class="bloqueo-info">
-      <span style="font-size:24px;">⏱️</span>
-      <span>TikTok se bloqueará durante 30 minutos.</span>
-    </div>
-    <button class="btn-mas-tiempo">Solicitar más tiempo</button>
-    <button class="btn-volver" onclick="showScreen('inicio')">Volver al inicio</button>
-  </div>
-  <nav class="navbar">
-    <div class="nav-item" onclick="showScreen('inicio')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Inicio</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('estadisticas')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
-      <span>Estadísticas</span>
-    </div>
-    <div class="nav-item active">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-      <span>Límites</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('perfil')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Perfil</span>
-    </div>
-  </nav>
-</div>
-
-<!-- ===== PANTALLA 7: ESTADÍSTICAS ===== -->
-<div id="estadisticas" class="screen">
-  <div class="stats-header">
-    <h2>ESTADÍSTICAS 📅</h2>
-  </div>
-  <div class="period-tabs">
-    <div class="period-tab" onclick="selectTab(this)">Día</div>
-    <div class="period-tab active" onclick="selectTab(this)">Semana</div>
-    <div class="period-tab" onclick="selectTab(this)">Mes</div>
-  </div>
-  <div class="chart-card">
-    <p class="chart-title">Tiempo de uso semanal</p>
-    <div class="bar-chart">
-      <div class="bar-wrap">
-        <span class="bar-val">3h20</span>
-        <div class="bar" style="height:100%"></div>
-        <span class="bar-label">LUN</span>
-      </div>
-      <div class="bar-wrap">
-        <span class="bar-val">2h15</span>
-        <div class="bar" style="height:68%"></div>
-        <span class="bar-label">MAR</span>
-      </div>
-      <div class="bar-wrap">
-        <span class="bar-val">2h30</span>
-        <div class="bar" style="height:75%"></div>
-        <span class="bar-label">MIÉ</span>
-      </div>
-      <div class="bar-wrap">
-        <span class="bar-val">1h45</span>
-        <div class="bar" style="height:53%"></div>
-        <span class="bar-label">JUE</span>
-      </div>
-      <div class="bar-wrap">
-        <span class="bar-val">2h10</span>
-        <div class="bar" style="height:65%"></div>
-        <span class="bar-label">VIE</span>
-      </div>
-      <div class="bar-wrap">
-        <span class="bar-val">1h30</span>
-        <div class="bar" style="height:45%"></div>
-        <span class="bar-label">SÁB</span>
-      </div>
-      <div class="bar-wrap">
-        <span class="bar-val">2h05</span>
-        <div class="bar" style="height:62%"></div>
-        <span class="bar-label">DOM</span>
-      </div>
-    </div>
-    <div class="insight-card">
-      <span>📈</span>
-      <span>Has reducido tu tiempo promedio un <strong>20%</strong> en comparación con la semana anterior. ¡Sigue así!</span>
-    </div>
-  </div>
-  <div class="resumen-card">
-    <p class="resumen-title">Resumen semanal</p>
-    <div class="resumen-row">
-      <span class="resumen-key">Promedio diario</span>
-      <span class="resumen-val">2 h 05 min</span>
-    </div>
-    <div class="resumen-row">
-      <span class="resumen-key">Total esta semana</span>
-      <span class="resumen-val">14 h 35 min</span>
-    </div>
-    <div class="resumen-row">
-      <span class="resumen-key">Meta diaria</span>
-      <span class="resumen-val">2 h 30 min</span>
-    </div>
-  </div>
-  <nav class="navbar">
-    <div class="nav-item" onclick="showScreen('inicio')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Inicio</span>
-    </div>
-    <div class="nav-item active">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
-      <span>Estadísticas</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('alerta')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-      <span>Límites</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('perfil')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Perfil</span>
-    </div>
-  </nav>
-</div>
-
-<!-- ===== PANTALLA 8: LOGROS ===== -->
-<div id="logros" class="screen">
-  <div class="logros-header">
-    <h2>LOGROS</h2>
-    <span style="font-size:28px;">🏆</span>
-  </div>
-  <div class="trophy-big">🏆</div>
-  <div class="logro-item">
-    <div class="logro-icon logro-green">✅</div>
-    <div class="logro-info">
-      <h3>3 días cumpliendo tu meta</h3>
-      <p>¡Excelente! Sigue manteniendo el control.</p>
-    </div>
-  </div>
-  <div class="logro-item">
-    <div class="logro-icon logro-purple">🏅</div>
-    <div class="logro-info">
-      <h3>Primera semana controlada</h3>
-      <p>Completaste tu primera semana cumpliendo tu meta diaria.</p>
-    </div>
-  </div>
-  <div class="logro-item">
-    <div class="logro-icon logro-blue">🌙</div>
-    <div class="logro-info">
-      <h3>Menos de 2 horas diarias</h3>
-      <p>Has mantenido tu uso por debajo de 2 horas diarias.</p>
-    </div>
-  </div>
-  <div class="motivacion">
-    <span style="font-size:24px;">😊</span>
+    <button class="back-btn" onclick="irInicio()">←</button>
     <div>
-      <p style="font-weight:700;color:#2e7d32;">¡Sigue así!</p>
-      <span style="font-size:13px;color:#2e7d32;">Cada minuto cuenta.</span>
+      <h2>Mis Apps</h2>
+      <p style="font-size:13px; color:#a0b4ff; margin-top:2px;">Establece límites de tiempo</p>
     </div>
   </div>
-  <nav class="navbar">
-    <div class="nav-item" onclick="showScreen('inicio')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Inicio</span>
+  <div class="content">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px;">📱 TODAS LAS APPS</div>
+      <div class="app-item" onclick="abrirModal('Instagram','📸')">
+        <div class="app-info">
+          <span class="app-icon">📸</span>
+          <div><div class="app-name">Instagram</div><div class="app-time" id="limite-Instagram">Sin límite</div></div>
+        </div>
+        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+      </div>
+      <div class="app-item" onclick="abrirModal('YouTube','▶️')">
+        <div class="app-info">
+          <span class="app-icon">▶️</span>
+          <div><div class="app-name">YouTube</div><div class="app-time" id="limite-YouTube">Sin límite</div></div>
+        </div>
+        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+      </div>
+      <div class="app-item" onclick="abrirModal('WhatsApp','💬')">
+        <div class="app-info">
+          <span class="app-icon">💬</span>
+          <div><div class="app-name">WhatsApp</div><div class="app-time" id="limite-WhatsApp">Sin límite</div></div>
+        </div>
+        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+      </div>
+      <div class="app-item" onclick="abrirModal('TikTok','🎵')">
+        <div class="app-info">
+          <span class="app-icon">🎵</span>
+          <div><div class="app-name">TikTok</div><div class="app-time" id="limite-TikTok">Sin límite</div></div>
+        </div>
+        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+      </div>
+      <div class="app-item" onclick="abrirModal('Twitter','🐦')">
+        <div class="app-info">
+          <span class="app-icon">🐦</span>
+          <div><div class="app-name">Twitter / X</div><div class="app-time" id="limite-Twitter">Sin límite</div></div>
+        </div>
+        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+      </div>
+      <div class="app-item" onclick="abrirModal('Netflix','🎬')">
+        <div class="app-info">
+          <span class="app-icon">🎬</span>
+          <div><div class="app-name">Netflix</div><div class="app-time" id="limite-Netflix">Sin límite</div></div>
+        </div>
+        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+      </div>
+      <div class="app-item" onclick="abrirModal('Facebook','👥')">
+        <div class="app-info">
+          <span class="app-icon">👥</span>
+          <div><div class="app-name">Facebook</div><div class="app-time" id="limite-Facebook">Sin límite</div></div>
+        </div>
+        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+      </div>
+      <div class="app-item" onclick="abrirModal('Spotify','🎧')">
+        <div class="app-info">
+          <span class="app-icon">🎧</span>
+          <div><div class="app-name">Spotify</div><div class="app-time" id="limite-Spotify">Sin límite</div></div>
+        </div>
+        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+      </div>
     </div>
-    <div class="nav-item" onclick="showScreen('estadisticas')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
-      <span>Estadísticas</span>
-    </div>
-    <div class="nav-item" onclick="showScreen('alerta')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-      <span>Límites</span>
-    </div>
-    <div class="nav-item active" onclick="showScreen('logros')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Perfil</span>
-    </div>
-  </nav>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="irInicio()"><span>🏠</span><span>Inicio</span></div>
+    <div class="nav-item active"><span>📱</span><span>Apps</span></div>
+    <div class="nav-item" onclick="irAlertas()"><span>🔔</span><span>Alertas</span></div>
+    <div class="nav-item" onclick="irPerfil()"><span>👤</span><span>Perfil</span></div>
+  </div>
 </div>
 
-<!-- ===== PANTALLA: PERFIL ===== -->
-<div id="perfil" class="screen">
+<!-- ALERTAS -->
+<div id="alertas-screen" class="screen">
+  <div class="header">
+    <div class="header-top">
+      <div><h2>🔔 Alertas</h2><p>Tus notificaciones</p></div>
+      <span class="badge">3</span>
+    </div>
+  </div>
+  <div class="content">
+    <div class="alerta-item">
+      <span class="alerta-icon">⚠️</span>
+      <div>
+        <div class="alerta-titulo">Límite de Instagram alcanzado</div>
+        <div class="alerta-desc">Has usado Instagram por más de 1 hora hoy</div>
+        <div class="alerta-tiempo">Hace 2 horas</div>
+      </div>
+    </div>
+    <div class="alerta-item">
+      <span class="alerta-icon">🏆</span>
+      <div>
+        <div class="alerta-titulo">¡Meta cumplida!</div>
+        <div class="alerta-desc">Lograste tu objetivo de tiempo de pantalla hoy</div>
+        <div class="alerta-tiempo">Ayer</div>
+      </div>
+    </div>
+    <div class="alerta-item">
+      <span class="alerta-icon">📊</span>
+      <div>
+        <div class="alerta-titulo">Resumen semanal listo</div>
+        <div class="alerta-desc">Usaste 2h menos que la semana pasada</div>
+        <div class="alerta-tiempo">Hace 2 días</div>
+      </div>
+    </div>
+    <div class="alerta-item">
+      <span class="alerta-icon">🎯</span>
+      <div>
+        <div class="alerta-titulo">TikTok: 80% del límite</div>
+        <div class="alerta-desc">Te quedan 12 minutos de TikTok hoy</div>
+        <div class="alerta-tiempo">Hace 3 días</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="irInicio()"><span>🏠</span><span>Inicio</span></div>
+    <div class="nav-item" onclick="irApps()"><span>📱</span><span>Apps</span></div>
+    <div class="nav-item active"><span>🔔</span><span>Alertas</span></div>
+    <div class="nav-item" onclick="irPerfil()"><span>👤</span><span>Perfil</span></div>
+  </div>
+</div>
+
+<!-- PERFIL -->
+<div id="perfil-screen" class="screen">
   <div class="perfil-header">
     <div class="perfil-avatar">👤</div>
-    <h2 id="perfil-nombre">Usuario</h2>
-    <p>Meta diaria: <span id="perfil-meta">3 horas</span></p>
+    <div class="perfil-nombre" id="perfil-nombre">Usuario</div>
+    <div class="perfil-email" id="perfil-email">correo@ejemplo.com</div>
   </div>
-  <div class="perfil-card">
-    <div class="perfil-row">
-      <div class="perfil-row-left"><span class="perfil-row-icon">⚙️</span> Mi meta diaria</div>
-      <span class="perfil-arrow">›</span>
+  <div class="content" style="padding-top:20px;">
+    <div class="perfil-section-title">Mi cuenta</div>
+    <div class="perfil-item">
+      <span class="perfil-item-icon">👤</span>
+      <div><div class="perfil-item-text">Editar perfil</div><div class="perfil-item-sub">Nombre y correo</div></div>
     </div>
-    <div class="perfil-row">
-      <div class="perfil-row-left"><span class="perfil-row-icon">🔔</span> Notificaciones</div>
-      <span class="perfil-arrow">›</span>
+    <div class="perfil-item">
+      <span class="perfil-item-icon">🎯</span>
+      <div><div class="perfil-item-text">Mi meta diaria</div><div class="perfil-item-sub">4 horas de pantalla</div></div>
     </div>
-    <div class="perfil-row">
-      <div class="perfil-row-left"><span class="perfil-row-icon">🔒</span> Privacidad</div>
-      <span class="perfil-arrow">›</span>
+    <div class="perfil-section-title">Configuración</div>
+    <div class="perfil-item">
+      <span class="perfil-item-icon">🔔</span>
+      <div><div class="perfil-item-text">Notificaciones</div><div class="perfil-item-sub">Activadas</div></div>
     </div>
-    <div class="perfil-row">
-      <div class="perfil-row-left"><span class="perfil-row-icon">❓</span> Ayuda</div>
-      <span class="perfil-arrow">›</span>
+    <div class="perfil-item">
+      <span class="perfil-item-icon">🌙</span>
+      <div><div class="perfil-item-text">Modo oscuro</div><div class="perfil-item-sub">Desactivado</div></div>
+    </div>
+    <div class="perfil-section-title">Sesión</div>
+    <div class="perfil-item" onclick="cerrarSesion()" style="border-left: 4px solid #ff4757;">
+      <span class="perfil-item-icon">🚪</span>
+      <div><div class="perfil-item-text" style="color:#ff4757;">Cerrar sesión</div><div class="perfil-item-sub">Salir de la cuenta</div></div>
     </div>
   </div>
-  <nav class="navbar">
-    <div class="nav-item" onclick="showScreen('inicio')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Inicio</span>
+  <div class="bottom-nav">
+    <div class="nav-item" onclick="irInicio()"><span>🏠</span><span>Inicio</span></div>
+    <div class="nav-item" onclick="irApps()"><span>📱</span><span>Apps</span></div>
+    <div class="nav-item" onclick="irAlertas()"><span>🔔</span><span>Alertas</span></div>
+    <div class="nav-item active"><span>👤</span><span>Perfil</span></div>
+  </div>
+</div>
+
+<!-- MODAL LÍMITE -->
+<div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
+  <div class="modal-box">
+    <div class="modal-title">⏱ Establecer límite</div>
+    <div class="modal-app" id="modal-app-nombre">Instagram</div>
+    <div class="time-options">
+      <div class="time-opt" onclick="seleccionarTiempo('15 minutos', this)">15 min</div>
+      <div class="time-opt" onclick="seleccionarTiempo('30 minutos', this)">30 min</div>
+      <div class="time-opt" onclick="seleccionarTiempo('1 hora', this)">1 hora</div>
+      <div class="time-opt" onclick="seleccionarTiempo('2 horas', this)">2 horas</div>
+      <div class="time-opt" onclick="seleccionarTiempo('3 horas', this)">3 horas</div>
+      <div class="time-opt" onclick="seleccionarPersonalizado(this)">✏️ Personalizado</div>
     </div>
-    <div class="nav-item" onclick="showScreen('estadisticas')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zm5.6 8H19v6h-2.8z"/></svg>
-      <span>Estadísticas</span>
+    <div class="custom-input-wrap" id="custom-input-wrap">
+      <input type="text" id="custom-input" placeholder="Ej: 45 minutos, 1h 30m..." />
     </div>
-    <div class="nav-item" onclick="showScreen('alerta')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-      <span>Límites</span>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="cerrarModalBtn()">Cancelar</button>
+      <button class="btn-save" onclick="guardarLimite()">Guardar ✓</button>
     </div>
-    <div class="nav-item active">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-      <span>Perfil</span>
-    </div>
-  </nav>
+  </div>
 </div>
 
 <script>
-let metaSeleccionada = '2 horas';
+let appActual = '';
+let tiempoSeleccionado = '';
+let usuarioNombre = '';
+let usuarioEmail = '';
 
-function showScreen(id) {
+// SPLASH → REGISTRO
+window.onload = function() {
+  setTimeout(function() {
+    mostrar('registro');
+  }, 2500);
+};
+
+function mostrar(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 
-function selectMeta(el, meta) {
-  document.querySelectorAll('.meta-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  metaSeleccionada = meta;
+// REGISTRO
+function registrar() {
+  const nombre = document.getElementById('reg-nombre').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value.trim();
+
+  if (!nombre) { alert('Por favor escribe tu nombre'); return; }
+  if (!email) { alert('Por favor escribe tu correo'); return; }
+  if (pass.length < 6) { alert('La contraseña debe tener al menos 6 caracteres'); return; }
+
+  usuarioNombre = nombre;
+  usuarioEmail = email;
+  localStorage.setItem('tc_nombre', nombre);
+  localStorage.setItem('tc_email', email);
+  actualizarUsuario();
+  mostrar('inicio');
 }
 
-function guardarMeta() {
-  localStorage.setItem('meta', metaSeleccionada);
-  document.getElementById('meta-label').textContent = 'Meta diaria: ' + metaSeleccionada;
-  document.getElementById('perfil-meta').textContent = metaSeleccionada;
-  showScreen('inicio');
+// LOGIN
+function login() {
+  const nombre = localStorage.getItem('tc_nombre') || 'Usuario';
+  const email = localStorage.getItem('tc_email') || '';
+  usuarioNombre = nombre;
+  usuarioEmail = email;
+  actualizarUsuario();
+  mostrar('inicio');
 }
 
-function selectTab(el) {
-  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
+function actualizarUsuario() {
+  document.getElementById('saludo-nombre').textContent = 'Hola, ' + usuarioNombre + ' 👋';
+  document.getElementById('perfil-nombre').textContent = usuarioNombre;
+  document.getElementById('perfil-email').textContent = usuarioEmail;
+  // Fecha de hoy
+  const dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const hoy = new Date();
+  document.getElementById('fecha-hoy').textContent =
+    'Hoy es ' + dias[hoy.getDay()] + ', ' + hoy.getDate() + ' de ' + meses[hoy.getMonth()];
 }
 
-// Cargar meta guardada
-window.onload = function() {
-  const meta = localStorage.getItem('meta');
-  if(meta) {
-    metaSeleccionada = meta;
-    document.getElementById('meta-label').textContent = 'Meta diaria: ' + meta;
-    document.getElementById('perfil-meta').textContent = meta;
+function mostrarLogin() { mostrar('login'); }
+function mostrarRegistro() { mostrar('registro'); }
+
+// NAVEGACIÓN
+function irInicio() { mostrar('inicio'); }
+function irApps() { mostrar('apps-screen'); }
+function irAlertas() { mostrar('alertas-screen'); }
+function irPerfil() { mostrar('perfil-screen'); }
+
+function cerrarSesion() {
+  if (confirm('¿Cerrar sesión?')) {
+    usuarioNombre = '';
+    usuarioEmail = '';
+    mostrar('registro');
   }
 }
+
+// MODAL
+function abrirModal(nombre, icono) {
+  appActual = nombre;
+  tiempoSeleccionado = '';
+  document.getElementById('modal-app-nombre').textContent = icono + ' ' + nombre;
+  document.querySelectorAll('.time-opt').forEach(o => o.classList.remove('selected'));
+  document.getElementById('custom-input-wrap').style.display = 'none';
+  document.getElementById('custom-input').value = '';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function cerrarModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+
+function cerrarModalBtn() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function seleccionarTiempo(tiempo, el) {
+  tiempoSeleccionado = tiempo;
+  document.querySelectorAll('.time-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('custom-input-wrap').style.display = 'none';
+}
+
+function seleccionarPersonalizado(el) {
+  document.querySelectorAll('.time-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('custom-input-wrap').style.display = 'block';
+  document.getElementById('custom-input').focus();
+  tiempoSeleccionado = 'personalizado';
+}
+
+function guardarLimite() {
+  let tiempo = tiempoSeleccionado;
+  if (tiempo === 'personalizado') {
+    tiempo = document.getElementById('custom-input').value.trim();
+    if (!tiempo) { alert('Escribe un tiempo personalizado'); return; }
+  }
+  if (!tiempo) { alert('Selecciona un tiempo'); return; }
+  const el = document.getElementById('limite-' + appActual);
+  if (el) el.textContent = '⏱ Límite: ' + tiempo;
+  cerrarModalBtn();
+}
+
+// Cargar usuario si ya existe
+window.addEventListener('load', function() {
+  const n = localStorage.getItem('tc_nombre');
+  if (n) { usuarioNombre = n; usuarioEmail = localStorage.getItem('tc_email') || ''; }
+});
 </script>
 </body>
 </html>
