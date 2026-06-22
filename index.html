@@ -2,654 +2,909 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>TimeControl</title>
+<meta name="theme-color" content="#1a2980">
+<link rel="manifest" href="manifest.json">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; color: #1a1a2e; }
-.screen { display: none; min-height: 100vh; flex-direction: column; }
-.screen.active { display: flex; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; color: #1a1a2e; overflow: hidden; }
 
-/* SPLASH */
-#splash {
-  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
-  align-items: center; justify-content: center; flex-direction: column; gap: 20px;
-}
-#splash .logo { font-size: 80px; }
-#splash h1 { color: white; font-size: 32px; font-weight: 700; letter-spacing: 2px; }
-#splash p { color: #a0b4ff; font-size: 14px; }
-.loader { width: 200px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 20px; overflow: hidden; }
-.loader-bar { height: 100%; width: 0%; background: #4f8ef7; border-radius: 2px; animation: load 2s ease forwards; }
-@keyframes load { to { width: 100%; } }
+  /* GRADIENTE AZUL DEL PROTOTIPO */
+  .gradient-bg {
+    background: linear-gradient(160deg, #1a2980 0%, #26d0ce 100%);
+  }
 
-/* REGISTRO */
-#registro {
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  align-items: center; justify-content: center; padding: 30px;
-}
-.reg-card {
-  background: white; border-radius: 24px; padding: 40px 30px;
-  width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-}
-.reg-card .logo-top { text-align: center; font-size: 50px; margin-bottom: 10px; }
-.reg-card h2 { text-align: center; color: #1a1a2e; font-size: 24px; margin-bottom: 5px; }
-.reg-card p { text-align: center; color: #888; font-size: 13px; margin-bottom: 30px; }
-.input-group { margin-bottom: 16px; }
-.input-group label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 600; }
-.input-group input {
-  width: 100%; padding: 14px 16px; border: 2px solid #e8ecff;
-  border-radius: 12px; font-size: 15px; outline: none; transition: border 0.3s;
-}
-.input-group input:focus { border-color: #4f8ef7; }
-.btn-primary {
-  width: 100%; padding: 16px; background: linear-gradient(135deg, #4f8ef7, #1a5cdb);
-  color: white; border: none; border-radius: 12px; font-size: 16px;
-  font-weight: 700; cursor: pointer; margin-top: 10px; letter-spacing: 0.5px;
-}
-.btn-primary:active { transform: scale(0.98); }
-.link-text { text-align: center; margin-top: 16px; font-size: 13px; color: #888; }
-.link-text span { color: #4f8ef7; font-weight: 600; cursor: pointer; }
+  .screen { display: none; width: 100vw; height: 100vh; flex-direction: column; overflow: hidden; }
+  .screen.active { display: flex; }
 
-/* HEADER */
-.header {
-  background: linear-gradient(135deg, #1a1a2e, #0f3460);
-  padding: 50px 20px 20px; color: white;
-}
-.header-top { display: flex; justify-content: space-between; align-items: center; }
-.header h2 { font-size: 22px; font-weight: 700; }
-.header p { font-size: 13px; color: #a0b4ff; margin-top: 2px; }
-.avatar {
-  width: 42px; height: 42px; background: #4f8ef7;
-  border-radius: 50%; display: flex; align-items: center;
-  justify-content: center; font-size: 18px; cursor: pointer;
-}
+  /* ===== SPLASH ===== */
+  #splash {
+    background: linear-gradient(160deg, #1a2980 0%, #26d0ce 100%);
+    align-items: center; justify-content: center;
+  }
+  .splash-logo { text-align: center; color: white; }
+  .splash-logo .icon { font-size: 80px; margin-bottom: 16px; animation: pulse 1.5s infinite; }
+  .splash-logo h1 { font-size: 36px; font-weight: 800; letter-spacing: 2px; }
+  .splash-logo p { font-size: 14px; opacity: 0.85; margin-top: 8px; }
+  .splash-bar { width: 200px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 4px; margin-top: 40px; overflow: hidden; }
+  .splash-bar-fill { height: 100%; width: 0%; background: white; border-radius: 4px; animation: load 2s ease forwards; }
+  @keyframes load { to { width: 100%; } }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
 
-/* NAV */
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: white; display: flex; justify-content: space-around;
-  padding: 10px 0 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-  z-index: 100;
-}
-.nav-item {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 4px; cursor: pointer; padding: 6px 16px; border-radius: 12px;
-  transition: background 0.2s; font-size: 11px; color: #888;
-}
-.nav-item.active { color: #4f8ef7; background: #f0f4ff; }
-.nav-item span:first-child { font-size: 22px; }
+  /* ===== WELCOME ===== */
+  #welcome {
+    background: linear-gradient(160deg, #1a2980 0%, #26d0ce 100%);
+    align-items: center; justify-content: space-between; padding: 60px 30px 50px;
+  }
+  .welcome-top { text-align: center; color: white; }
+  .welcome-top .app-icon { font-size: 70px; margin-bottom: 12px; }
+  .welcome-top h1 { font-size: 32px; font-weight: 800; letter-spacing: 2px; }
+  .welcome-top p { font-size: 14px; opacity: 0.85; margin-top: 8px; line-height: 1.5; }
+  .welcome-illustration { font-size: 120px; text-align: center; }
+  .welcome-bottom { width: 100%; text-align: center; }
+  .welcome-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 30px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+  .dot.active { background: white; width: 24px; border-radius: 4px; }
+  .btn-welcome {
+    width: 100%; padding: 16px; border-radius: 50px; border: none;
+    background: #00c853; color: white; font-size: 18px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 20px rgba(0,200,83,0.4);
+  }
 
-/* MAIN CONTENT */
-.content { flex: 1; padding: 20px; padding-bottom: 90px; overflow-y: auto; }
+  /* ===== REGISTRO ===== */
+  #registro {
+    background: linear-gradient(160deg, #1a2980 0%, #26d0ce 100%);
+    padding: 0; justify-content: flex-end;
+  }
+  .registro-card {
+    background: white; border-radius: 30px 30px 0 0;
+    padding: 32px 24px 40px; width: 100%;
+  }
+  .registro-header { text-align: center; margin-bottom: 8px; }
+  .registro-header .reg-icon { font-size: 40px; }
+  .registro-header h2 { font-size: 22px; font-weight: 800; color: #1a2980; margin-top: 8px; }
+  .registro-header p { font-size: 13px; color: #666; margin-top: 4px; }
+  .registro-top-illustration { text-align: center; padding: 30px 0 10px; color: white; font-size: 80px; }
 
-/* CARDS */
-.card {
-  background: white; border-radius: 16px; padding: 20px;
-  margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-}
-.card-title { font-size: 13px; color: #888; margin-bottom: 4px; font-weight: 600; }
-.card-value { font-size: 28px; font-weight: 800; color: #1a1a2e; }
-.card-sub { font-size: 12px; color: #aaa; margin-top: 2px; }
+  .input-group { margin-bottom: 16px; }
+  .input-group label { font-size: 13px; font-weight: 600; color: #1a2980; margin-bottom: 6px; display: block; }
+  .input-group input {
+    width: 100%; padding: 14px 16px; border-radius: 12px;
+    border: 2px solid #e0e8ff; font-size: 15px; outline: none;
+    transition: border 0.2s; background: #f8f9ff;
+  }
+  .input-group input:focus { border-color: #1a2980; }
 
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-.stat-card {
-  background: white; border-radius: 16px; padding: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-}
-.stat-icon { font-size: 24px; margin-bottom: 8px; }
-.stat-label { font-size: 11px; color: #888; font-weight: 600; }
-.stat-value { font-size: 20px; font-weight: 800; color: #1a1a2e; }
+  .meta-title { font-size: 15px; font-weight: 700; color: #1a2980; margin-bottom: 12px; }
+  .meta-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .meta-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; border-radius: 12px;
+    border: 2px solid #e0e8ff; cursor: pointer;
+    transition: all 0.2s; background: #f8f9ff;
+  }
+  .meta-option.selected { border-color: #1a2980; background: #e8eeff; }
+  .meta-option .opt-icon { font-size: 20px; }
+  .meta-option .opt-text { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+  .meta-option .opt-check {
+    margin-left: auto; width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;
+  }
+  .meta-option.selected .opt-check { background: #1a2980; border-color: #1a2980; color: white; font-size: 12px; }
 
-/* BOTÓN REGISTRAR */
-.btn-registrar {
-  width: 100%; padding: 18px; background: linear-gradient(135deg, #4f8ef7, #1a5cdb);
-  color: white; border: none; border-radius: 16px; font-size: 17px;
-  font-weight: 700; cursor: pointer; margin-bottom: 16px;
-  box-shadow: 0 8px 24px rgba(79,142,247,0.4);
-}
+  #custom-time-input { display: none; margin-bottom: 16px; }
+  #custom-time-input input {
+    width: 100%; padding: 14px 16px; border-radius: 12px;
+    border: 2px solid #1a2980; font-size: 15px; outline: none; background: #f8f9ff;
+  }
 
-/* APPS LIST */
-.app-item {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 0; border-bottom: 1px solid #f0f0f0;
-}
-.app-info { display: flex; align-items: center; gap: 12px; }
-.app-icon { font-size: 28px; }
-.app-name { font-size: 15px; font-weight: 600; color: #1a1a2e; }
-.app-time { font-size: 12px; color: #888; }
-.app-bar-wrap { width: 80px; height: 6px; background: #f0f0f0; border-radius: 3px; }
-.app-bar { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #4f8ef7, #1a5cdb); }
+  .btn-primary {
+    width: 100%; padding: 16px; border-radius: 50px; border: none;
+    background: linear-gradient(90deg, #1a2980, #26d0ce);
+    color: white; font-size: 16px; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 20px rgba(26,41,128,0.3);
+  }
 
-/* PANTALLA APPS */
-#apps-screen { background: #f0f4ff; }
-.apps-header {
-  background: linear-gradient(135deg, #1a1a2e, #0f3460);
-  padding: 50px 20px 20px; color: white;
-  display: flex; align-items: center; gap: 15px;
-}
-.back-btn {
-  width: 36px; height: 36px; background: rgba(255,255,255,0.15);
-  border-radius: 50%; display: flex; align-items: center;
-  justify-content: center; cursor: pointer; font-size: 18px;
-  border: none; color: white;
-}
-.apps-header h2 { font-size: 20px; font-weight: 700; }
+  /* ===== HOME ===== */
+  #home { background: #f0f4ff; flex-direction: column; }
+  .home-header {
+    background: linear-gradient(160deg, #1a2980 0%, #26d0ce 100%);
+    padding: 50px 20px 30px; color: white;
+    border-radius: 0 0 30px 30px;
+  }
+  .home-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .home-header-top h2 { font-size: 22px; font-weight: 700; }
+  .home-header-top .bell { font-size: 24px; }
+  .time-card {
+    background: rgba(255,255,255,0.15); border-radius: 20px;
+    padding: 20px; backdrop-filter: blur(10px);
+  }
+  .time-card p { font-size: 13px; opacity: 0.85; }
+  .time-card h1 { font-size: 42px; font-weight: 800; margin: 4px 0; }
+  .progress-bar-wrap { background: rgba(255,255,255,0.3); border-radius: 10px; height: 10px; margin: 12px 0 6px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: #00c853; border-radius: 10px; transition: width 0.5s; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 12px; opacity: 0.85; }
 
-/* MODAL LÍMITE */
-.modal-overlay {
-  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5); z-index: 200; align-items: flex-end;
-}
-.modal-overlay.open { display: flex; }
-.modal-box {
-  background: white; border-radius: 24px 24px 0 0; padding: 30px;
-  width: 100%; animation: slideUp 0.3s ease;
-}
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-.modal-app { font-size: 13px; color: #888; margin-bottom: 20px; }
-.time-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-.time-opt {
-  padding: 14px; border: 2px solid #e8ecff; border-radius: 12px;
-  text-align: center; cursor: pointer; font-size: 14px; font-weight: 600;
-  transition: all 0.2s; background: white;
-}
-.time-opt.selected { border-color: #4f8ef7; background: #f0f4ff; color: #4f8ef7; }
-.custom-input-wrap { margin-bottom: 16px; display: none; }
-.custom-input-wrap input {
-  width: 100%; padding: 14px; border: 2px solid #4f8ef7;
-  border-radius: 12px; font-size: 15px; outline: none; text-align: center;
-}
-.modal-btns { display: flex; gap: 10px; }
-.btn-cancel {
-  flex: 1; padding: 14px; border: 2px solid #e8ecff; background: white;
-  border-radius: 12px; font-size: 15px; cursor: pointer; font-weight: 600;
-}
-.btn-save {
-  flex: 1; padding: 14px; background: linear-gradient(135deg, #4f8ef7, #1a5cdb);
-  color: white; border: none; border-radius: 12px; font-size: 15px;
-  cursor: pointer; font-weight: 700;
-}
+  .home-body { flex: 1; overflow-y: auto; padding: 20px; }
+  .section-title { font-size: 16px; font-weight: 700; color: #1a2980; margin-bottom: 12px; }
 
-/* PERFIL */
-#perfil-screen { background: #f0f4ff; }
-.perfil-header {
-  background: linear-gradient(135deg, #1a1a2e, #0f3460);
-  padding: 50px 20px 40px; text-align: center; color: white;
-}
-.perfil-avatar { font-size: 60px; margin-bottom: 10px; }
-.perfil-nombre { font-size: 22px; font-weight: 700; }
-.perfil-email { font-size: 13px; color: #a0b4ff; margin-top: 4px; }
-.perfil-item {
-  background: white; margin: 0 16px 10px; border-radius: 14px;
-  padding: 16px 20px; display: flex; align-items: center; gap: 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer;
-}
-.perfil-item-icon { font-size: 22px; }
-.perfil-item-text { font-size: 15px; font-weight: 600; color: #1a1a2e; }
-.perfil-item-sub { font-size: 12px; color: #888; }
-.perfil-section-title { padding: 20px 20px 8px; font-size: 13px; color: #888; font-weight: 700; text-transform: uppercase; }
+  .meta-status-card {
+    background: white; border-radius: 16px; padding: 16px;
+    display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(26,41,128,0.08);
+  }
+  .meta-status-icon { font-size: 32px; }
+  .meta-status-text p { font-size: 12px; color: #666; }
+  .meta-status-text h3 { font-size: 15px; font-weight: 700; color: #1a2980; }
 
-/* ALERTAS */
-#alertas-screen { background: #f0f4ff; }
-.alerta-item {
-  background: white; border-radius: 14px; padding: 16px;
-  margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-.alerta-icon { font-size: 28px; }
-.alerta-titulo { font-size: 15px; font-weight: 700; color: #1a1a2e; }
-.alerta-desc { font-size: 13px; color: #888; margin-top: 2px; }
-.alerta-tiempo { font-size: 11px; color: #aaa; margin-top: 4px; }
-.badge { background: #ff4757; color: white; border-radius: 10px; padding: 2px 8px; font-size: 11px; font-weight: 700; }
+  .quick-access { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+  .quick-btn {
+    background: white; border-radius: 16px; padding: 14px 8px;
+    text-align: center; cursor: pointer; border: none;
+    box-shadow: 0 2px 12px rgba(26,41,128,0.08); transition: transform 0.2s;
+  }
+  .quick-btn:active { transform: scale(0.95); }
+  .quick-btn .q-icon { font-size: 26px; margin-bottom: 6px; }
+  .quick-btn .q-label { font-size: 11px; color: #1a2980; font-weight: 600; }
 
+  .apps-list { display: flex; flex-direction: column; gap: 10px; }
+  .app-item {
+    background: white; border-radius: 14px; padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 2px 12px rgba(26,41,128,0.08);
+  }
+  .app-emoji { font-size: 28px; }
+  .app-info { flex: 1; }
+  .app-info .app-name { font-size: 14px; font-weight: 700; color: #1a1a2e; }
+  .app-bar-wrap { height: 6px; background: #e0e8ff; border-radius: 6px; margin-top: 4px; overflow: hidden; }
+  .app-bar-fill { height: 100%; border-radius: 6px; }
+  .app-time { font-size: 13px; font-weight: 700; color: #1a2980; }
+  .app-pct { font-size: 11px; color: #888; }
+
+  /* ===== BOTTOM NAV ===== */
+  .bottom-nav {
+    display: flex; background: white; border-top: 1px solid #e0e8ff;
+    padding: 8px 0 20px;
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    gap: 4px; cursor: pointer; padding: 6px 0; border: none; background: none;
+  }
+  .nav-item .nav-icon { font-size: 22px; }
+  .nav-item .nav-label { font-size: 10px; font-weight: 600; color: #aaa; }
+  .nav-item.active .nav-label { color: #1a2980; }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 0 4px #1a2980); }
+
+  /* ===== APPS SCREEN ===== */
+  #apps { background: #f0f4ff; }
+  .screen-header {
+    background: linear-gradient(160deg, #1a2980 0%, #26d0ce 100%);
+    padding: 50px 20px 20px; color: white;
+    display: flex; align-items: center; gap: 12px;
+    border-radius: 0 0 24px 24px;
+  }
+  .back-btn {
+    background: rgba(255,255,255,0.2); border: none; color: white;
+    width: 36px; height: 36px; border-radius: 50%; font-size: 18px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .screen-header h2 { font-size: 20px; font-weight: 700; }
+
+  .date-nav { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px 20px; }
+  .date-nav button { background: white; border: 2px solid #e0e8ff; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; color: #1a2980; }
+  .date-nav span { font-size: 15px; font-weight: 700; color: #1a2980; }
+
+  .apps-detail-list { flex: 1; overflow-y: auto; padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .app-detail-item {
+    background: white; border-radius: 16px; padding: 16px;
+    box-shadow: 0 2px 12px rgba(26,41,128,0.08);
+  }
+  .app-detail-top { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .app-detail-info { flex: 1; }
+  .app-detail-name { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+  .app-detail-time { font-size: 13px; color: #666; }
+  .app-detail-pct { font-size: 14px; font-weight: 700; color: #1a2980; }
+  .app-detail-bar { height: 8px; background: #e0e8ff; border-radius: 8px; overflow: hidden; }
+  .app-detail-bar-fill { height: 100%; border-radius: 8px; }
+
+  /* ===== LIMITES SCREEN ===== */
+  #limites { background: #f0f4ff; }
+  .limites-body { flex: 1; overflow-y: auto; padding: 20px; }
+  .limite-card {
+    background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px;
+    box-shadow: 0 2px 12px rgba(26,41,128,0.08);
+  }
+  .limite-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .limite-info { flex: 1; }
+  .limite-name { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+  .limite-time { font-size: 13px; color: #666; }
+  .limite-status { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .limite-status.ok { background: #e8f5e9; color: #00c853; }
+  .limite-status.warn { background: #fff3e0; color: #ff9800; }
+  .limite-status.over { background: #ffebee; color: #f44336; }
+  .limite-bar { height: 8px; background: #e0e8ff; border-radius: 8px; overflow: hidden; }
+  .limite-bar-fill { height: 100%; border-radius: 8px; }
+
+  /* ===== ESTADISTICAS ===== */
+  #estadisticas { background: #f0f4ff; }
+  .stats-body { flex: 1; overflow-y: auto; padding: 20px; }
+  .tab-group { display: flex; background: white; border-radius: 12px; padding: 4px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(26,41,128,0.08); }
+  .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; background: none; color: #888; }
+  .tab-btn.active { background: linear-gradient(90deg, #1a2980, #26d0ce); color: white; }
+
+  .chart-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(26,41,128,0.08); }
+  .chart-title { font-size: 14px; font-weight: 700; color: #1a2980; margin-bottom: 16px; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 8px; height: 100px; }
+  .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+  .chart-bar { width: 100%; border-radius: 6px 6px 0 0; background: linear-gradient(180deg, #26d0ce, #1a2980); min-height: 4px; }
+  .chart-label { font-size: 10px; color: #888; }
+
+  .insight-card { background: linear-gradient(90deg, #1a2980, #26d0ce); border-radius: 16px; padding: 16px; margin-bottom: 16px; color: white; display: flex; align-items: center; gap: 12px; }
+  .insight-icon { font-size: 28px; }
+  .insight-text { font-size: 13px; line-height: 1.5; }
+
+  .summary-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 12px rgba(26,41,128,0.08); }
+  .summary-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f4ff; }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-label { font-size: 13px; color: #666; }
+  .summary-value { font-size: 13px; font-weight: 700; color: #1a2980; }
+
+  /* ===== LOGROS ===== */
+  #logros { background: #f0f4ff; }
+  .logros-body { flex: 1; overflow-y: auto; padding: 20px; }
+  .logro-item {
+    background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 2px 12px rgba(26,41,128,0.08);
+  }
+  .logro-icon { font-size: 36px; }
+  .logro-info { flex: 1; }
+  .logro-name { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+  .logro-desc { font-size: 12px; color: #666; margin-top: 2px; }
+  .logro-badge { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+  .logro-badge.earned { background: #e8f5e9; color: #00c853; }
+  .logro-badge.locked { background: #f0f4ff; color: #aaa; }
+
+  /* ===== PERFIL ===== */
+  #perfil { background: #f0f4ff; }
+  .perfil-header {
+    background: linear-gradient(160deg, #1a2980 0%, #26d0ce 100%);
+    padding: 50px 20px 40px; text-align: center; color: white;
+    border-radius: 0 0 30px 30px;
+  }
+  .avatar { width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.2); font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; border: 3px solid rgba(255,255,255,0.5); }
+  .perfil-name { font-size: 22px; font-weight: 800; }
+  .perfil-meta { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .perfil-body { flex: 1; overflow-y: auto; padding: 20px; }
+  .perfil-option {
+    background: white; border-radius: 14px; padding: 16px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    box-shadow: 0 2px 12px rgba(26,41,128,0.08);
+  }
+  .perfil-option .p-icon { font-size: 22px; }
+  .perfil-option .p-text { flex: 1; font-size: 14px; font-weight: 600; color: #1a1a2e; }
+  .perfil-option .p-arrow { color: #aaa; }
+
+  /* ===== ALERTA ===== */
+  #alerta { background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; align-items: center; justify-content: center; display: none; }
+  #alerta.active { display: flex; }
+  .alerta-card { background: white; border-radius: 24px; padding: 32px 24px; width: 85%; max-width: 340px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .alerta-icon { font-size: 60px; margin-bottom: 16px; }
+  .alerta-title { font-size: 22px; font-weight: 800; color: #f44336; margin-bottom: 8px; }
+  .alerta-msg { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; }
+  .alerta-btns { display: flex; flex-direction: column; gap: 10px; }
+  .btn-danger { padding: 14px; border-radius: 50px; border: none; background: #f44336; color: white; font-size: 15px; font-weight: 700; cursor: pointer; }
+  .btn-outline { padding: 14px; border-radius: 50px; border: 2px solid #1a2980; background: none; color: #1a2980; font-size: 15px; font-weight: 700; cursor: pointer; }
+
+  /* ===== RESTRICCION ===== */
+  #restriccion { background: rgba(0,0,0,0.5); position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; align-items: center; justify-content: center; display: none; }
+  #restriccion.active { display: flex; }
+  .restriccion-card { background: white; border-radius: 24px; padding: 32px 24px; width: 85%; max-width: 340px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .restriccion-icon { font-size: 60px; margin-bottom: 16px; }
+  .restriccion-title { font-size: 22px; font-weight: 800; color: #f44336; margin-bottom: 8px; }
+  .restriccion-msg { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 0; }
 </style>
 </head>
 <body>
 
 <!-- SPLASH -->
 <div id="splash" class="screen active">
-  <div class="logo">⏱️</div>
-  <h1>TimeControl</h1>
-  <p>Controla tu tiempo en pantalla</p>
-  <div class="loader"><div class="loader-bar"></div></div>
+  <div class="splash-logo">
+    <div class="icon">⏱️</div>
+    <h1>TimeControl</h1>
+    <p>Controla tu tiempo en redes sociales</p>
+    <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+  </div>
+</div>
+
+<!-- WELCOME -->
+<div id="welcome" class="screen">
+  <div class="welcome-top">
+    <div class="app-icon">⏱️</div>
+    <h1>TimeControl</h1>
+    <p>Controla tu tiempo en<br>redes sociales</p>
+  </div>
+  <div class="welcome-illustration">🧑‍💻</div>
+  <div class="welcome-bottom">
+    <div class="welcome-dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <button class="btn-welcome" onclick="goTo('registro')">Comenzar →</button>
+  </div>
 </div>
 
 <!-- REGISTRO -->
 <div id="registro" class="screen">
-  <div class="reg-card">
-    <div class="logo-top">⏱️</div>
-    <h2>Crear cuenta</h2>
-    <p>Empieza a controlar tu tiempo</p>
-    <div class="input-group">
+  <div class="registro-top-illustration">🧑‍💻</div>
+  <div class="registro-card">
+    <div class="registro-header">
+      <div class="reg-icon">⚙️</div>
+      <h2>Configura tu meta diaria</h2>
+      <p>¿Cuánto tiempo deseas usar redes sociales al día?</p>
+    </div>
+    <div class="input-group" style="margin-top:16px;">
       <label>Tu nombre</label>
-      <input type="text" id="reg-nombre" placeholder="Ej: Ángel" />
+      <input type="text" id="nombre-input" placeholder="Escribe tu nombre..." maxlength="20">
     </div>
-    <div class="input-group">
-      <label>Correo electrónico</label>
-      <input type="email" id="reg-email" placeholder="correo@ejemplo.com" />
+    <div class="meta-title">Selecciona tu límite diario:</div>
+    <div class="meta-options">
+      <div class="meta-option" onclick="selectMeta(this,'1 hora')">
+        <span class="opt-icon">⏰</span>
+        <span class="opt-text">1 hora</span>
+        <div class="opt-check"></div>
+      </div>
+      <div class="meta-option" onclick="selectMeta(this,'2 horas')">
+        <span class="opt-icon">⏰</span>
+        <span class="opt-text">2 horas</span>
+        <div class="opt-check"></div>
+      </div>
+      <div class="meta-option" onclick="selectMeta(this,'3 horas')">
+        <span class="opt-icon">⏰</span>
+        <span class="opt-text">3 horas</span>
+        <div class="opt-check"></div>
+      </div>
+      <div class="meta-option" id="opt-personalizado" onclick="selectMeta(this,'Personalizado')">
+        <span class="opt-icon">✏️</span>
+        <span class="opt-text">Personalizado</span>
+        <div class="opt-check"></div>
+      </div>
     </div>
-    <div class="input-group">
-      <label>Contraseña</label>
-      <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres" />
+    <div id="custom-time-input">
+      <input type="text" id="custom-time-val" placeholder="Ej: 1h 30min o 90 minutos">
     </div>
-    <button class="btn-primary" onclick="registrar()">Crear cuenta →</button>
-    <div class="link-text">¿Ya tienes cuenta? <span onclick="mostrarLogin()">Iniciar sesión</span></div>
+    <button class="btn-primary" onclick="guardarMeta()">Guardar meta →</button>
   </div>
 </div>
 
-<!-- LOGIN -->
-<div id="login" class="screen">
-  <div class="reg-card">
-    <div class="logo-top">⏱️</div>
-    <h2>Bienvenido</h2>
-    <p>Inicia sesión en tu cuenta</p>
-    <div class="input-group">
-      <label>Correo electrónico</label>
-      <input type="email" id="login-email" placeholder="correo@ejemplo.com" />
-    </div>
-    <div class="input-group">
-      <label>Contraseña</label>
-      <input type="password" id="login-pass" placeholder="Tu contraseña" />
-    </div>
-    <button class="btn-primary" onclick="login()">Iniciar sesión →</button>
-    <div class="link-text">¿No tienes cuenta? <span onclick="mostrarRegistro()">Registrarse</span></div>
-  </div>
-</div>
-
-<!-- INICIO -->
-<div id="inicio" class="screen">
-  <div class="header">
-    <div class="header-top">
+<!-- HOME -->
+<div id="home" class="screen">
+  <div class="home-header">
+    <div class="home-header-top">
       <div>
-        <h2 id="saludo-nombre">Hola, Usuario 👋</h2>
-        <p id="fecha-hoy">Hoy es lunes</p>
+        <p style="font-size:13px;opacity:0.85;">Hola,</p>
+        <h2 id="home-nombre">Usuario 👋</h2>
       </div>
-      <div class="avatar" onclick="irPerfil()">👤</div>
+      <span class="bell" onclick="showAlerta()">🔔</span>
+    </div>
+    <div class="time-card">
+      <p>Tiempo usado hoy</p>
+      <h1>2h 35min</h1>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width:75%"></div>
+      </div>
+      <div class="progress-info">
+        <span>75% de tu meta</span>
+        <span id="meta-display">Meta: 3 horas</span>
+      </div>
     </div>
   </div>
-  <div class="content">
-    <div class="card">
-      <div class="card-title">⏱ TIEMPO HOY</div>
-      <div class="card-value">3h 24m</div>
-      <div class="card-sub">↑ 12% más que ayer</div>
-    </div>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">📱</div>
-        <div class="stat-label">APPS USADAS</div>
-        <div class="stat-value">8</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🔓</div>
-        <div class="stat-label">DESBLOQUEOS</div>
-        <div class="stat-value">34</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🏆</div>
-        <div class="stat-label">RACHA</div>
-        <div class="stat-value">5 días</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🎯</div>
-        <div class="stat-label">META</div>
-        <div class="stat-value">68%</div>
+  <div class="home-body">
+    <div class="meta-status-card">
+      <div class="meta-status-icon">✅</div>
+      <div class="meta-status-text">
+        <p>Estado actual</p>
+        <h3>Te quedan 45 minutos</h3>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title" style="margin-bottom:14px;">📊 APPS MÁS USADAS HOY</div>
+    <div class="section-title">Accesos rápidos</div>
+    <div class="quick-access">
+      <button class="quick-btn" onclick="goTo('apps')">
+        <div class="q-icon">📱</div>
+        <div class="q-label">Aplicaciones</div>
+      </button>
+      <button class="quick-btn" onclick="goTo('limites')">
+        <div class="q-icon">🔒</div>
+        <div class="q-label">Límites</div>
+      </button>
+      <button class="quick-btn" onclick="goTo('estadisticas')">
+        <div class="q-icon">📊</div>
+        <div class="q-label">Estadísticas</div>
+      </button>
+      <button class="quick-btn" onclick="goTo('logros')">
+        <div class="q-icon">🏆</div>
+        <div class="q-label">Logros</div>
+      </button>
+    </div>
+    <div class="section-title">Top apps hoy</div>
+    <div class="apps-list">
       <div class="app-item">
+        <span class="app-emoji">🎵</span>
         <div class="app-info">
-          <span class="app-icon">📸</span>
-          <div><div class="app-name">Instagram</div><div class="app-time">1h 12m</div></div>
+          <div class="app-name">TikTok</div>
+          <div class="app-bar-wrap"><div class="app-bar-fill" style="width:80%;background:linear-gradient(90deg,#1a2980,#26d0ce)"></div></div>
         </div>
-        <div class="app-bar-wrap"><div class="app-bar" style="width:80%"></div></div>
+        <div style="text-align:right">
+          <div class="app-time">1h 20min</div>
+          <div class="app-pct">80%</div>
+        </div>
       </div>
       <div class="app-item">
+        <span class="app-emoji">📸</span>
         <div class="app-info">
-          <span class="app-icon">▶️</span>
-          <div><div class="app-name">YouTube</div><div class="app-time">58m</div></div>
+          <div class="app-name">Instagram</div>
+          <div class="app-bar-wrap"><div class="app-bar-fill" style="width:32%;background:linear-gradient(90deg,#26d0ce,#1a2980)"></div></div>
         </div>
-        <div class="app-bar-wrap"><div class="app-bar" style="width:60%"></div></div>
+        <div style="text-align:right">
+          <div class="app-time">40min</div>
+          <div class="app-pct">32%</div>
+        </div>
       </div>
       <div class="app-item">
+        <span class="app-emoji">▶️</span>
         <div class="app-info">
-          <span class="app-icon">💬</span>
-          <div><div class="app-name">WhatsApp</div><div class="app-time">34m</div></div>
+          <div class="app-name">YouTube</div>
+          <div class="app-bar-wrap"><div class="app-bar-fill" style="width:18%;background:linear-gradient(90deg,#1a2980,#26d0ce)"></div></div>
         </div>
-        <div class="app-bar-wrap"><div class="app-bar" style="width:38%"></div></div>
+        <div style="text-align:right">
+          <div class="app-time">35min</div>
+          <div class="app-pct">18%</div>
+        </div>
       </div>
     </div>
-    <button class="btn-registrar" onclick="irApps()">📱 Ver todas las apps</button>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item active" onclick="irInicio()"><span>🏠</span><span>Inicio</span></div>
-    <div class="nav-item" onclick="irApps()"><span>📱</span><span>Apps</span></div>
-    <div class="nav-item" onclick="irAlertas()"><span>🔔</span><span>Alertas</span></div>
-    <div class="nav-item" onclick="irPerfil()"><span>👤</span><span>Perfil</span></div>
+    <button class="nav-item active" onclick="goTo('home')">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Inicio</span>
+    </button>
+    <button class="nav-item" onclick="goTo('estadisticas')">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Estadísticas</span>
+    </button>
+    <button class="nav-item" onclick="goTo('limites')">
+      <span class="nav-icon">🔒</span>
+      <span class="nav-label">Límites</span>
+    </button>
+    <button class="nav-item" onclick="goTo('perfil')">
+      <span class="nav-icon">👤</span>
+      <span class="nav-label">Perfil</span>
+    </button>
   </div>
 </div>
 
 <!-- APPS -->
-<div id="apps-screen" class="screen">
-  <div class="apps-header">
-    <button class="back-btn" onclick="irInicio()">←</button>
-    <div>
-      <h2>Mis Apps</h2>
-      <p style="font-size:13px; color:#a0b4ff; margin-top:2px;">Establece límites de tiempo</p>
-    </div>
+<div id="apps" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h2>Uso de aplicaciones</h2>
   </div>
-  <div class="content">
-    <div class="card">
-      <div class="card-title" style="margin-bottom:14px;">📱 TODAS LAS APPS</div>
-      <div class="app-item" onclick="abrirModal('Instagram','📸')">
-        <div class="app-info">
-          <span class="app-icon">📸</span>
-          <div><div class="app-name">Instagram</div><div class="app-time" id="limite-Instagram">Sin límite</div></div>
+  <div class="date-nav">
+    <button>‹</button>
+    <span>Hoy</span>
+    <button>›</button>
+  </div>
+  <div class="apps-detail-list">
+    <div class="app-detail-item">
+      <div class="app-detail-top">
+        <span style="font-size:28px">🎵</span>
+        <div class="app-detail-info">
+          <div class="app-detail-name">TikTok</div>
+          <div class="app-detail-time">1h 20min</div>
         </div>
-        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+        <span class="app-detail-pct">80%</span>
       </div>
-      <div class="app-item" onclick="abrirModal('YouTube','▶️')">
-        <div class="app-info">
-          <span class="app-icon">▶️</span>
-          <div><div class="app-name">YouTube</div><div class="app-time" id="limite-YouTube">Sin límite</div></div>
+      <div class="app-detail-bar"><div class="app-detail-bar-fill" style="width:80%;background:linear-gradient(90deg,#1a2980,#26d0ce)"></div></div>
+    </div>
+    <div class="app-detail-item">
+      <div class="app-detail-top">
+        <span style="font-size:28px">📸</span>
+        <div class="app-detail-info">
+          <div class="app-detail-name">Instagram</div>
+          <div class="app-detail-time">40min</div>
         </div>
-        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+        <span class="app-detail-pct">32%</span>
       </div>
-      <div class="app-item" onclick="abrirModal('WhatsApp','💬')">
-        <div class="app-info">
-          <span class="app-icon">💬</span>
-          <div><div class="app-name">WhatsApp</div><div class="app-time" id="limite-WhatsApp">Sin límite</div></div>
+      <div class="app-detail-bar"><div class="app-detail-bar-fill" style="width:32%;background:linear-gradient(90deg,#26d0ce,#1a2980)"></div></div>
+    </div>
+    <div class="app-detail-item">
+      <div class="app-detail-top">
+        <span style="font-size:28px">▶️</span>
+        <div class="app-detail-info">
+          <div class="app-detail-name">YouTube</div>
+          <div class="app-detail-time">35min</div>
         </div>
-        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+        <span class="app-detail-pct">18%</span>
       </div>
-      <div class="app-item" onclick="abrirModal('TikTok','🎵')">
-        <div class="app-info">
-          <span class="app-icon">🎵</span>
-          <div><div class="app-name">TikTok</div><div class="app-time" id="limite-TikTok">Sin límite</div></div>
+      <div class="app-detail-bar"><div class="app-detail-bar-fill" style="width:18%;background:linear-gradient(90deg,#1a2980,#26d0ce)"></div></div>
+    </div>
+    <div class="app-detail-item">
+      <div class="app-detail-top">
+        <span style="font-size:28px">💬</span>
+        <div class="app-detail-info">
+          <div class="app-detail-name">WhatsApp</div>
+          <div class="app-detail-time">20min</div>
         </div>
-        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+        <span class="app-detail-pct">10%</span>
       </div>
-      <div class="app-item" onclick="abrirModal('Twitter','🐦')">
-        <div class="app-info">
-          <span class="app-icon">🐦</span>
-          <div><div class="app-name">Twitter / X</div><div class="app-time" id="limite-Twitter">Sin límite</div></div>
+      <div class="app-detail-bar"><div class="app-detail-bar-fill" style="width:10%;background:linear-gradient(90deg,#26d0ce,#1a2980)"></div></div>
+    </div>
+    <div class="app-detail-item">
+      <div class="app-detail-top">
+        <span style="font-size:28px">📘</span>
+        <div class="app-detail-info">
+          <div class="app-detail-name">Facebook</div>
+          <div class="app-detail-time">10min</div>
         </div>
-        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
+        <span class="app-detail-pct">5%</span>
       </div>
-      <div class="app-item" onclick="abrirModal('Netflix','🎬')">
-        <div class="app-info">
-          <span class="app-icon">🎬</span>
-          <div><div class="app-name">Netflix</div><div class="app-time" id="limite-Netflix">Sin límite</div></div>
-        </div>
-        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
-      </div>
-      <div class="app-item" onclick="abrirModal('Facebook','👥')">
-        <div class="app-info">
-          <span class="app-icon">👥</span>
-          <div><div class="app-name">Facebook</div><div class="app-time" id="limite-Facebook">Sin límite</div></div>
-        </div>
-        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
-      </div>
-      <div class="app-item" onclick="abrirModal('Spotify','🎧')">
-        <div class="app-info">
-          <span class="app-icon">🎧</span>
-          <div><div class="app-name">Spotify</div><div class="app-time" id="limite-Spotify">Sin límite</div></div>
-        </div>
-        <span style="color:#4f8ef7; font-weight:700;">+ Límite</span>
-      </div>
+      <div class="app-detail-bar"><div class="app-detail-bar-fill" style="width:5%;background:linear-gradient(90deg,#1a2980,#26d0ce)"></div></div>
     </div>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="irInicio()"><span>🏠</span><span>Inicio</span></div>
-    <div class="nav-item active"><span>📱</span><span>Apps</span></div>
-    <div class="nav-item" onclick="irAlertas()"><span>🔔</span><span>Alertas</span></div>
-    <div class="nav-item" onclick="irPerfil()"><span>👤</span><span>Perfil</span></div>
+    <button class="nav-item" onclick="goTo('home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+    <button class="nav-item" onclick="goTo('estadisticas')"><span class="nav-icon">📊</span><span class="nav-label">Estadísticas</span></button>
+    <button class="nav-item" onclick="goTo('limites')"><span class="nav-icon">🔒</span><span class="nav-label">Límites</span></button>
+    <button class="nav-item" onclick="goTo('perfil')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
   </div>
 </div>
 
-<!-- ALERTAS -->
-<div id="alertas-screen" class="screen">
-  <div class="header">
-    <div class="header-top">
-      <div><h2>🔔 Alertas</h2><p>Tus notificaciones</p></div>
-      <span class="badge">3</span>
-    </div>
+<!-- LIMITES -->
+<div id="limites" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h2>Mis límites</h2>
   </div>
-  <div class="content">
-    <div class="alerta-item">
-      <span class="alerta-icon">⚠️</span>
-      <div>
-        <div class="alerta-titulo">Límite de Instagram alcanzado</div>
-        <div class="alerta-desc">Has usado Instagram por más de 1 hora hoy</div>
-        <div class="alerta-tiempo">Hace 2 horas</div>
+  <div class="limites-body">
+    <div class="limite-card">
+      <div class="limite-top">
+        <span style="font-size:28px">🎵</span>
+        <div class="limite-info">
+          <div class="limite-name">TikTok</div>
+          <div class="limite-time">Usado: 1h 20min / Límite: 1h 30min</div>
+        </div>
+        <span class="limite-status warn">⚠️ 89%</span>
       </div>
+      <div class="limite-bar"><div class="limite-bar-fill" style="width:89%;background:linear-gradient(90deg,#ff9800,#f44336)"></div></div>
     </div>
-    <div class="alerta-item">
-      <span class="alerta-icon">🏆</span>
-      <div>
-        <div class="alerta-titulo">¡Meta cumplida!</div>
-        <div class="alerta-desc">Lograste tu objetivo de tiempo de pantalla hoy</div>
-        <div class="alerta-tiempo">Ayer</div>
+    <div class="limite-card">
+      <div class="limite-top">
+        <span style="font-size:28px">📸</span>
+        <div class="limite-info">
+          <div class="limite-name">Instagram</div>
+          <div class="limite-time">Usado: 40min / Límite: 1h</div>
+        </div>
+        <span class="limite-status ok">✅ 67%</span>
       </div>
+      <div class="limite-bar"><div class="limite-bar-fill" style="width:67%;background:linear-gradient(90deg,#1a2980,#26d0ce)"></div></div>
     </div>
-    <div class="alerta-item">
-      <span class="alerta-icon">📊</span>
-      <div>
-        <div class="alerta-titulo">Resumen semanal listo</div>
-        <div class="alerta-desc">Usaste 2h menos que la semana pasada</div>
-        <div class="alerta-tiempo">Hace 2 días</div>
+    <div class="limite-card">
+      <div class="limite-top">
+        <span style="font-size:28px">▶️</span>
+        <div class="limite-info">
+          <div class="limite-name">YouTube</div>
+          <div class="limite-time">Usado: 35min / Límite: 30min</div>
+        </div>
+        <span class="limite-status over">🚫 117%</span>
       </div>
+      <div class="limite-bar"><div class="limite-bar-fill" style="width:100%;background:#f44336"></div></div>
     </div>
-    <div class="alerta-item">
-      <span class="alerta-icon">🎯</span>
-      <div>
-        <div class="alerta-titulo">TikTok: 80% del límite</div>
-        <div class="alerta-desc">Te quedan 12 minutos de TikTok hoy</div>
-        <div class="alerta-tiempo">Hace 3 días</div>
+    <div class="limite-card">
+      <div class="limite-top">
+        <span style="font-size:28px">💬</span>
+        <div class="limite-info">
+          <div class="limite-name">WhatsApp</div>
+          <div class="limite-time">Usado: 20min / Límite: 45min</div>
+        </div>
+        <span class="limite-status ok">✅ 44%</span>
       </div>
+      <div class="limite-bar"><div class="limite-bar-fill" style="width:44%;background:linear-gradient(90deg,#1a2980,#26d0ce)"></div></div>
     </div>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="irInicio()"><span>🏠</span><span>Inicio</span></div>
-    <div class="nav-item" onclick="irApps()"><span>📱</span><span>Apps</span></div>
-    <div class="nav-item active"><span>🔔</span><span>Alertas</span></div>
-    <div class="nav-item" onclick="irPerfil()"><span>👤</span><span>Perfil</span></div>
+    <button class="nav-item" onclick="goTo('home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+    <button class="nav-item" onclick="goTo('estadisticas')"><span class="nav-icon">📊</span><span class="nav-label">Estadísticas</span></button>
+    <button class="nav-item active" onclick="goTo('limites')"><span class="nav-icon">🔒</span><span class="nav-label">Límites</span></button>
+    <button class="nav-item" onclick="goTo('perfil')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
+  </div>
+</div>
+
+<!-- ESTADISTICAS -->
+<div id="estadisticas" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h2>Estadísticas</h2>
+  </div>
+  <div class="stats-body">
+    <div class="tab-group">
+      <button class="tab-btn" onclick="setTab(this)">Día</button>
+      <button class="tab-btn active" onclick="setTab(this)">Semana</button>
+      <button class="tab-btn" onclick="setTab(this)">Mes</button>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">⏱️ Tiempo de uso semanal</div>
+      <div class="chart-bars">
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:60%"></div><span class="chart-label">LUN</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:80%"></div><span class="chart-label">MAR</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:45%"></div><span class="chart-label">MIÉ</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:90%"></div><span class="chart-label">JUE</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:70%"></div><span class="chart-label">VIE</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:55%"></div><span class="chart-label">SÁB</span></div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:75%"></div><span class="chart-label">DOM</span></div>
+      </div>
+    </div>
+    <div class="insight-card">
+      <span class="insight-icon">📈</span>
+      <span class="insight-text">Has reducido tu tiempo promedio un <strong>20%</strong> en comparación con la semana anterior. ¡Sigue así!</span>
+    </div>
+    <div class="summary-card">
+      <div class="chart-title">📋 Resumen semanal</div>
+      <div class="summary-row"><span class="summary-label">Promedio diario</span><span class="summary-value">3h 05min</span></div>
+      <div class="summary-row"><span class="summary-label">Total esta semana</span><span class="summary-value">16h 35min</span></div>
+      <div class="summary-row"><span class="summary-label">Meta diaria</span><span class="summary-value" id="stats-meta">3h</span></div>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="goTo('home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+    <button class="nav-item active" onclick="goTo('estadisticas')"><span class="nav-icon">📊</span><span class="nav-label">Estadísticas</span></button>
+    <button class="nav-item" onclick="goTo('limites')"><span class="nav-icon">🔒</span><span class="nav-label">Límites</span></button>
+    <button class="nav-item" onclick="goTo('perfil')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
+  </div>
+</div>
+
+<!-- LOGROS -->
+<div id="logros" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <h2>Mis logros 🏆</h2>
+  </div>
+  <div class="logros-body">
+    <div class="logro-item">
+      <span class="logro-icon">🥇</span>
+      <div class="logro-info">
+        <div class="logro-name">3 días cumpliendo tu meta</div>
+        <div class="logro-desc">¡Excelente! Sigue manteniendo el control.</div>
+      </div>
+      <span class="logro-badge earned">✅ Ganado</span>
+    </div>
+    <div class="logro-item">
+      <span class="logro-icon">🥈</span>
+      <div class="logro-info">
+        <div class="logro-name">Primera semana controlada</div>
+        <div class="logro-desc">Completaste la primera semana siguiendo el control.</div>
+      </div>
+      <span class="logro-badge earned">✅ Ganado</span>
+    </div>
+    <div class="logro-item">
+      <span class="logro-icon">⚡</span>
+      <div class="logro-info">
+        <div class="logro-name">Menos de 2 horas diarias</div>
+        <div class="logro-desc">Has mantenido uso por debajo de 2h durante 5 días.</div>
+      </div>
+      <span class="logro-badge earned">✅ Ganado</span>
+    </div>
+    <div class="logro-item">
+      <span class="logro-icon">🔒</span>
+      <div class="logro-info">
+        <div class="logro-name">Maestro del control</div>
+        <div class="logro-desc">30 días consecutivos cumpliendo tu meta.</div>
+      </div>
+      <span class="logro-badge locked">🔒 Bloqueado</span>
+    </div>
+    <div class="logro-item">
+      <span class="logro-icon">🌟</span>
+      <div class="logro-info">
+        <div class="logro-name">Sin redes por 1 día</div>
+        <div class="logro-desc">Pasaste un día completo sin usar redes sociales.</div>
+      </div>
+      <span class="logro-badge locked">🔒 Bloqueado</span>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <button class="nav-item" onclick="goTo('home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+    <button class="nav-item" onclick="goTo('estadisticas')"><span class="nav-icon">📊</span><span class="nav-label">Estadísticas</span></button>
+    <button class="nav-item" onclick="goTo('limites')"><span class="nav-icon">🔒</span><span class="nav-label">Límites</span></button>
+    <button class="nav-item" onclick="goTo('perfil')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
   </div>
 </div>
 
 <!-- PERFIL -->
-<div id="perfil-screen" class="screen">
+<div id="perfil" class="screen">
   <div class="perfil-header">
-    <div class="perfil-avatar">👤</div>
-    <div class="perfil-nombre" id="perfil-nombre">Usuario</div>
-    <div class="perfil-email" id="perfil-email">correo@ejemplo.com</div>
+    <div class="avatar">👤</div>
+    <div class="perfil-name" id="perfil-nombre">Usuario</div>
+    <div class="perfil-meta" id="perfil-meta">Meta diaria: 3 horas</div>
   </div>
-  <div class="content" style="padding-top:20px;">
-    <div class="perfil-section-title">Mi cuenta</div>
-    <div class="perfil-item">
-      <span class="perfil-item-icon">👤</span>
-      <div><div class="perfil-item-text">Editar perfil</div><div class="perfil-item-sub">Nombre y correo</div></div>
+  <div class="perfil-body">
+    <div class="perfil-option" onclick="goTo('limites')">
+      <span class="p-icon">🔒</span>
+      <span class="p-text">Gestionar límites</span>
+      <span class="p-arrow">›</span>
     </div>
-    <div class="perfil-item">
-      <span class="perfil-item-icon">🎯</span>
-      <div><div class="perfil-item-text">Mi meta diaria</div><div class="perfil-item-sub">4 horas de pantalla</div></div>
+    <div class="perfil-option" onclick="goTo('logros')">
+      <span class="p-icon">🏆</span>
+      <span class="p-text">Mis logros</span>
+      <span class="p-arrow">›</span>
     </div>
-    <div class="perfil-section-title">Configuración</div>
-    <div class="perfil-item">
-      <span class="perfil-item-icon">🔔</span>
-      <div><div class="perfil-item-text">Notificaciones</div><div class="perfil-item-sub">Activadas</div></div>
+    <div class="perfil-option" onclick="goTo('estadisticas')">
+      <span class="p-icon">📊</span>
+      <span class="p-text">Ver estadísticas</span>
+      <span class="p-arrow">›</span>
     </div>
-    <div class="perfil-item">
-      <span class="perfil-item-icon">🌙</span>
-      <div><div class="perfil-item-text">Modo oscuro</div><div class="perfil-item-sub">Desactivado</div></div>
+    <div class="perfil-option" onclick="showAlerta()">
+      <span class="p-icon">🔔</span>
+      <span class="p-text">Probar alerta</span>
+      <span class="p-arrow">›</span>
     </div>
-    <div class="perfil-section-title">Sesión</div>
-    <div class="perfil-item" onclick="cerrarSesion()" style="border-left: 4px solid #ff4757;">
-      <span class="perfil-item-icon">🚪</span>
-      <div><div class="perfil-item-text" style="color:#ff4757;">Cerrar sesión</div><div class="perfil-item-sub">Salir de la cuenta</div></div>
+    <div class="perfil-option" onclick="showRestriccion()">
+      <span class="p-icon">🚫</span>
+      <span class="p-text">Probar restricción</span>
+      <span class="p-arrow">›</span>
+    </div>
+    <div class="perfil-option" onclick="cerrarSesion()" style="border-top:2px solid #ffebee;margin-top:10px;">
+      <span class="p-icon">🚪</span>
+      <span class="p-text" style="color:#f44336;">Cerrar sesión</span>
+      <span class="p-arrow" style="color:#f44336;">›</span>
     </div>
   </div>
   <div class="bottom-nav">
-    <div class="nav-item" onclick="irInicio()"><span>🏠</span><span>Inicio</span></div>
-    <div class="nav-item" onclick="irApps()"><span>📱</span><span>Apps</span></div>
-    <div class="nav-item" onclick="irAlertas()"><span>🔔</span><span>Alertas</span></div>
-    <div class="nav-item active"><span>👤</span><span>Perfil</span></div>
+    <button class="nav-item" onclick="goTo('home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></button>
+    <button class="nav-item" onclick="goTo('estadisticas')"><span class="nav-icon">📊</span><span class="nav-label">Estadísticas</span></button>
+    <button class="nav-item" onclick="goTo('limites')"><span class="nav-icon">🔒</span><span class="nav-label">Límites</span></button>
+    <button class="nav-item active" onclick="goTo('perfil')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></button>
   </div>
 </div>
 
-<!-- MODAL LÍMITE -->
-<div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
-  <div class="modal-box">
-    <div class="modal-title">⏱ Establecer límite</div>
-    <div class="modal-app" id="modal-app-nombre">Instagram</div>
-    <div class="time-options">
-      <div class="time-opt" onclick="seleccionarTiempo('15 minutos', this)">15 min</div>
-      <div class="time-opt" onclick="seleccionarTiempo('30 minutos', this)">30 min</div>
-      <div class="time-opt" onclick="seleccionarTiempo('1 hora', this)">1 hora</div>
-      <div class="time-opt" onclick="seleccionarTiempo('2 horas', this)">2 horas</div>
-      <div class="time-opt" onclick="seleccionarTiempo('3 horas', this)">3 horas</div>
-      <div class="time-opt" onclick="seleccionarPersonalizado(this)">✏️ Personalizado</div>
+<!-- ALERTA MODAL -->
+<div id="alerta" class="screen">
+  <div class="alerta-card">
+    <div class="alerta-icon">🔔</div>
+    <div class="alerta-title">¡ALERTA!</div>
+    <div class="alerta-msg">Has alcanzado el <strong>90% de tu límite diario</strong>.<br>Te quedan 15 minutos para llegar al límite.</div>
+    <div class="alerta-btns">
+      <button class="btn-danger" onclick="closeAlerta()">Continuar</button>
+      <button class="btn-outline" onclick="goTo('limites');closeAlerta()">Activar restricción</button>
     </div>
-    <div class="custom-input-wrap" id="custom-input-wrap">
-      <input type="text" id="custom-input" placeholder="Ej: 45 minutos, 1h 30m..." />
-    </div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="cerrarModalBtn()">Cancelar</button>
-      <button class="btn-save" onclick="guardarLimite()">Guardar ✓</button>
+  </div>
+</div>
+
+<!-- RESTRICCION MODAL -->
+<div id="restriccion" class="screen">
+  <div class="restriccion-card">
+    <div class="restriccion-icon">🔒</div>
+    <div class="restriccion-title">RESTRICCIÓN</div>
+    <div class="restriccion-msg"><strong>Tiempo agotado</strong><br>Has alcanzado tu límite diario para TikTok.<br><br>⏱️ TikTok se bloqueará durante 30 minutos.</div>
+    <div class="alerta-btns">
+      <button class="btn-danger" onclick="closeRestriccion()">Solicitar más tiempo</button>
+      <button class="btn-outline" onclick="closeRestriccion();goTo('home')">Volver al inicio</button>
     </div>
   </div>
 </div>
 
 <script>
-let appActual = '';
-let tiempoSeleccionado = '';
-let usuarioNombre = '';
-let usuarioEmail = '';
+  let historial = [];
+  let metaSeleccionada = '';
 
-// SPLASH → REGISTRO
-window.onload = function() {
-  setTimeout(function() {
-    mostrar('registro');
-  }, 2500);
-};
+  // SPLASH → WELCOME
+  setTimeout(() => { goTo('welcome'); }, 2500);
 
-function mostrar(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-// REGISTRO
-function registrar() {
-  const nombre = document.getElementById('reg-nombre').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const pass = document.getElementById('reg-pass').value.trim();
-
-  if (!nombre) { alert('Por favor escribe tu nombre'); return; }
-  if (!email) { alert('Por favor escribe tu correo'); return; }
-  if (pass.length < 6) { alert('La contraseña debe tener al menos 6 caracteres'); return; }
-
-  usuarioNombre = nombre;
-  usuarioEmail = email;
-  localStorage.setItem('tc_nombre', nombre);
-  localStorage.setItem('tc_email', email);
-  actualizarUsuario();
-  mostrar('inicio');
-}
-
-// LOGIN
-function login() {
-  const nombre = localStorage.getItem('tc_nombre') || 'Usuario';
-  const email = localStorage.getItem('tc_email') || '';
-  usuarioNombre = nombre;
-  usuarioEmail = email;
-  actualizarUsuario();
-  mostrar('inicio');
-}
-
-function actualizarUsuario() {
-  document.getElementById('saludo-nombre').textContent = 'Hola, ' + usuarioNombre + ' 👋';
-  document.getElementById('perfil-nombre').textContent = usuarioNombre;
-  document.getElementById('perfil-email').textContent = usuarioEmail;
-  // Fecha de hoy
-  const dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
-  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-  const hoy = new Date();
-  document.getElementById('fecha-hoy').textContent =
-    'Hoy es ' + dias[hoy.getDay()] + ', ' + hoy.getDate() + ' de ' + meses[hoy.getMonth()];
-}
-
-function mostrarLogin() { mostrar('login'); }
-function mostrarRegistro() { mostrar('registro'); }
-
-// NAVEGACIÓN
-function irInicio() { mostrar('inicio'); }
-function irApps() { mostrar('apps-screen'); }
-function irAlertas() { mostrar('alertas-screen'); }
-function irPerfil() { mostrar('perfil-screen'); }
-
-function cerrarSesion() {
-  if (confirm('¿Cerrar sesión?')) {
-    usuarioNombre = '';
-    usuarioEmail = '';
-    mostrar('registro');
+  function goTo(id) {
+    const screens = document.querySelectorAll('.screen');
+    const current = document.querySelector('.screen.active');
+    if (current && current.id !== 'alerta' && current.id !== 'restriccion') {
+      historial.push(current.id);
+    }
+    screens.forEach(s => s.classList.remove('active'));
+    const next = document.getElementById(id);
+    if (next) next.classList.add('active');
   }
-}
 
-// MODAL
-function abrirModal(nombre, icono) {
-  appActual = nombre;
-  tiempoSeleccionado = '';
-  document.getElementById('modal-app-nombre').textContent = icono + ' ' + nombre;
-  document.querySelectorAll('.time-opt').forEach(o => o.classList.remove('selected'));
-  document.getElementById('custom-input-wrap').style.display = 'none';
-  document.getElementById('custom-input').value = '';
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-function cerrarModal(e) {
-  if (e.target === document.getElementById('modal-overlay')) {
-    document.getElementById('modal-overlay').classList.remove('open');
+  function goBack() {
+    if (historial.length > 0) {
+      const prev = historial.pop();
+      const screens = document.querySelectorAll('.screen');
+      screens.forEach(s => s.classList.remove('active'));
+      document.getElementById(prev).classList.add('active');
+    } else {
+      goTo('home');
+    }
   }
-}
 
-function cerrarModalBtn() {
-  document.getElementById('modal-overlay').classList.remove('open');
-}
-
-function seleccionarTiempo(tiempo, el) {
-  tiempoSeleccionado = tiempo;
-  document.querySelectorAll('.time-opt').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('custom-input-wrap').style.display = 'none';
-}
-
-function seleccionarPersonalizado(el) {
-  document.querySelectorAll('.time-opt').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('custom-input-wrap').style.display = 'block';
-  document.getElementById('custom-input').focus();
-  tiempoSeleccionado = 'personalizado';
-}
-
-function guardarLimite() {
-  let tiempo = tiempoSeleccionado;
-  if (tiempo === 'personalizado') {
-    tiempo = document.getElementById('custom-input').value.trim();
-    if (!tiempo) { alert('Escribe un tiempo personalizado'); return; }
+  function selectMeta(el, valor) {
+    document.querySelectorAll('.meta-option').forEach(o => {
+      o.classList.remove('selected');
+      o.querySelector('.opt-check').innerHTML = '';
+    });
+    el.classList.add('selected');
+    el.querySelector('.opt-check').innerHTML = '✓';
+    metaSeleccionada = valor;
+    const customInput = document.getElementById('custom-time-input');
+    if (valor === 'Personalizado') {
+      customInput.style.display = 'block';
+    } else {
+      customInput.style.display = 'none';
+    }
   }
-  if (!tiempo) { alert('Selecciona un tiempo'); return; }
-  const el = document.getElementById('limite-' + appActual);
-  if (el) el.textContent = '⏱ Límite: ' + tiempo;
-  cerrarModalBtn();
-}
 
-// Cargar usuario si ya existe
-window.addEventListener('load', function() {
-  const n = localStorage.getItem('tc_nombre');
-  if (n) { usuarioNombre = n; usuarioEmail = localStorage.getItem('tc_email') || ''; }
-});
+  function guardarMeta() {
+    const nombre = document.getElementById('nombre-input').value.trim();
+    if (!nombre) { alert('Por favor escribe tu nombre'); return; }
+    if (!metaSeleccionada) { alert('Por favor selecciona una meta'); return; }
+    let metaFinal = metaSeleccionada;
+    if (metaSeleccionada === 'Personalizado') {
+      const custom = document.getElementById('custom-time-val').value.trim();
+      if (!custom) { alert('Por favor escribe tu tiempo personalizado'); return; }
+      metaFinal = custom;
+    }
+    localStorage.setItem('tc_nombre', nombre);
+    localStorage.setItem('tc_meta', metaFinal);
+    document.getElementById('home-nombre').textContent = nombre + ' 👋';
+    document.getElementById('perfil-nombre').textContent = nombre;
+    document.getElementById('meta-display').textContent = 'Meta: ' + metaFinal;
+    document.getElementById('perfil-meta').textContent = 'Meta diaria: ' + metaFinal;
+    document.getElementById('stats-meta').textContent = metaFinal;
+    historial = [];
+    goTo('home');
+  }
+
+  function setTab(btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function showAlerta() {
+    document.getElementById('alerta').classList.add('active');
+    document.getElementById('alerta').style.display = 'flex';
+  }
+  function closeAlerta() {
+    document.getElementById('alerta').classList.remove('active');
+    document.getElementById('alerta').style.display = 'none';
+  }
+  function showRestriccion() {
+    document.getElementById('restriccion').classList.add('active');
+    document.getElementById('restriccion').style.display = 'flex';
+  }
+  function closeRestriccion() {
+    document.getElementById('restriccion').classList.remove('active');
+    document.getElementById('restriccion').style.display = 'none';
+  }
+
+  function cerrarSesion() {
+    if (confirm('¿Cerrar sesión?')) {
+      localStorage.removeItem('tc_nombre');
+      localStorage.removeItem('tc_meta');
+      historial = [];
+      goTo('welcome');
+    }
+  }
+
+  // Cargar datos guardados
+  window.onload = function() {
+    const nombre = localStorage.getItem('tc_nombre');
+    const meta = localStorage.getItem('tc_meta');
+    if (nombre && meta) {
+      document.getElementById('home-nombre').textContent = nombre + ' 👋';
+      document.getElementById('perfil-nombre').textContent = nombre;
+      document.getElementById('meta-display').textContent = 'Meta: ' + meta;
+      document.getElementById('perfil-meta').textContent = 'Meta diaria: ' + meta;
+      document.getElementById('stats-meta').textContent = meta;
+    }
+  };
 </script>
 </body>
 </html>
